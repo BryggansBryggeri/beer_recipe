@@ -8,6 +8,7 @@ mod style;
 mod water;
 mod yeast;
 
+pub type Percent = f32;
 #[cfg(test)]
 mod tests {
     #[test]
