@@ -2,7 +2,7 @@ use serde;
 use serde::Deserialize;
 use serde::Deserializer;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct Hop {
     name: String,
@@ -54,14 +54,14 @@ impl<'de> Deserialize<'de> for Use {
     }
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 enum Type {
     Bittering,
     Aroma,
     Both,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 enum Form {
     Pellet,
     Plug,
@@ -75,15 +75,119 @@ mod tests {
     #[test]
     fn required_fields_only() {
         let xml_input = r"
-        <HOP>
-        <NAME>Cascade</NAME>
-        <VERSION>1</VERSION>
-        <ALPHA>5.0</ALPHA>
-        <AMOUNT>0.100</AMOUNT>
-        <USE>Dry Hop</USE>
-        <TIME>60</TIME>
-        </HOP>";
-        let hop: Hop = serde_xml_rs::from_str(xml_input).unwrap();
-        assert_eq!(hop.use_, Use::DryHop);
+            <HOP>
+                <NAME>Cascade</NAME>
+                <VERSION>1</VERSION>
+                <ALPHA>5.0</ALPHA>
+                <AMOUNT>0.100</AMOUNT>
+                <USE>Boil</USE>
+                <TIME>60</TIME>
+            </HOP>";
+        let parsed_hop: Hop = serde_xml_rs::from_str(xml_input).unwrap();
+        let true_hop = Hop {
+            name: "Cascade".into(),
+            version: 1,
+            alpha: 5.0,
+            amount: 0.100,
+            use_: Use::Boil,
+            time: 60.0,
+            notes: None,
+            type_: None,
+            form: None,
+            beta: None,
+            hsi: None,
+            origin: None,
+            substitutes: None,
+            humulene: None,
+            caryophyllene: None,
+            cohumulone: None,
+            myrcene: None,
+        };
+        assert_eq!(parsed_hop, true_hop);
+    }
+
+    #[test]
+    fn dry_hop_for_three_days() {
+        let xml_input = r"
+            <HOP>
+                <NAME>Fuggles</NAME>
+                <VERSION>1</VERSION>
+                <ALPHA>4.5</ALPHA>
+                <AMOUNT>0.250</AMOUNT>
+                <USE>Dry Hop</USE>
+                <TIME>10080.0</TIME>
+            </HOP>";
+        let parsed_hop: Hop = serde_xml_rs::from_str(xml_input).unwrap();
+        let true_hop = Hop {
+            name: "Fuggles".into(),
+            version: 1,
+            alpha: 4.5,
+            amount: 0.250,
+            use_: Use::DryHop,
+            time: 10080.0,
+            notes: None,
+            type_: None,
+            form: None,
+            beta: None,
+            hsi: None,
+            origin: None,
+            substitutes: None,
+            humulene: None,
+            caryophyllene: None,
+            cohumulone: None,
+            myrcene: None,
+        };
+        assert_eq!(parsed_hop, true_hop);
+    }
+
+    #[test]
+    fn mash_hops_with_all_fields_shuffled() {
+        let xml_input = r"
+            <HOP>
+                <AMOUNT>0.050</AMOUNT>
+                <VERSION>1</VERSION>
+                <USE>Mash</USE>
+                <ALPHA>4.5</ALPHA>
+                <NOTES> This hop is a really cool hops - you can use it for anything.
+                It leaps over buildings in a single bound, is faster than
+                a speeding bullet and makes really bitter beer.
+                </NOTES>
+                <TIME>45.0</TIME>
+                <BETA>5.5 </BETA>
+                <NAME>Super Hops</NAME>
+                <ORIGIN>Planet Krypton</ORIGIN>
+                <SUBSTITUTES>Goldings, Fuggles, Super Alpha</SUBSTITUTES>
+                <MYRCENE>24.4</MYRCENE>
+                <HSI>30</HSI>
+                <FORM>Leaf</FORM>
+                <TYPE>Bittering</TYPE>
+                <COHUMULONE>13.2</COHUMULONE>
+            </HOP>";
+        let parsed_hop: Hop = serde_xml_rs::from_str(xml_input).unwrap();
+        let true_hop = Hop {
+            name: "Super Hops".into(),
+            version: 1,
+            alpha: 4.5,
+            amount: 0.050,
+            use_: Use::Mash,
+            time: 45.0,
+            notes: Some(
+                "This hop is a really cool hops - you can use it for anything.
+                It leaps over buildings in a single bound, is faster than
+                a speeding bullet and makes really bitter beer."
+                    .into(),
+            ),
+            type_: Some(Type::Bittering),
+            form: Some(Form::Leaf),
+            beta: Some(5.5),
+            hsi: Some(30.0),
+            origin: Some("Planet Krypton".into()),
+            substitutes: Some("Goldings, Fuggles, Super Alpha".into()),
+            humulene: None,
+            caryophyllene: None,
+            cohumulone: Some(13.2),
+            myrcene: Some(24.4),
+        };
+        assert_eq!(parsed_hop, true_hop);
     }
 }
