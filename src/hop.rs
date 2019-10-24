@@ -71,8 +71,7 @@ enum Form {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_xml_rs;
-    #[test]
+    use serde_xml_rs; #[test]
     fn required_fields_only() {
         let xml_input = r"
             <HOP>
