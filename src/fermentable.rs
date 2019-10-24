@@ -9,7 +9,7 @@ pub struct Fermentable {
     name: String,
     version: u8,
     #[serde(rename = "TYPE")]
-    type_: Option<Type>,
+    type_: Type,
     amount: f32,
     #[serde(rename = "YIELD")]
     yield_: Percent,
@@ -73,7 +73,7 @@ mod tests {
         let true_fermentable = Fermentable {
             name: "Pale 2-row Malt".into(),
             version: 1,
-            type_: Some(Type::Grain),
+            type_: Type::Grain,
             amount: 5.0,
             yield_: 73.4,
             color: 3.0,
@@ -111,7 +111,7 @@ mod tests {
         let true_fermentable = Fermentable {
             name: "Fustons Hopped Amber".into(),
             version: 1,
-            type_: Some(Type::Extract),
+            type_: Type::Extract,
             amount: 0.50,
             yield_: 78.0,
             color: 13.0,
@@ -157,7 +157,7 @@ mod tests {
         let true_fermentable = Fermentable {
             name: "Crystal 40 L".into(),
             version: 1,
-            type_: Some(Type::Grain),
+            type_: Type::Grain,
             amount: 0.50,
             yield_: 74.0,
             color: 40.0,
