@@ -1,7 +1,7 @@
 use crate::equipment::Equipment;
 use crate::fermentable::Fermentable;
 use crate::hop::Hop;
-use crate::mash_step::MashStep;
+use crate::mash::Mash;
 use crate::misc::Misc;
 use crate::style::Style;
 use crate::water::Water;
@@ -17,7 +17,7 @@ pub struct Recipe {
     #[serde(rename = "TYPE")]
     type_: Type,
     style: Style,
-    equipment: Equipment,
+    equipment: Option<Equipment>,
     brewer: String,
     asst_brewer: Option<String>,
     batch_size: f32,
@@ -29,7 +29,7 @@ pub struct Recipe {
     miscs: Vec<Misc>,
     yeasts: Vec<Yeast>,
     waters: Vec<Water>,
-    mash: Vec<MashStep>,
+    mash: Vec<Mash>,
     notes: Option<String>,
     taste_notes: Option<String>,
     tast_rating: Option<f32>,

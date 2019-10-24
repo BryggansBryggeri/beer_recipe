@@ -1,7 +1,7 @@
 mod equipment;
 mod fermentable;
 mod hop;
-mod mash_step;
+mod mash;
 mod misc;
 mod recipe;
 mod style;
