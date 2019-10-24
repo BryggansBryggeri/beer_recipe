@@ -1,3 +1,4 @@
+use crate::{PartsPerMillion, PH};
 use serde;
 use serde::Deserialize;
 
@@ -6,14 +7,14 @@ use serde::Deserialize;
 pub struct Water {
     name: String,
     version: u8,
-    amount: f32,
-    calcium: f32,
-    bicarbonate: f32,
-    sulfate: f32,
-    chloride: f32,
-    sodium: f32,
-    magnesium: f32,
-    ph: Option<f32>,
+    amount: PartsPerMillion,
+    calcium: PartsPerMillion,
+    bicarbonate: PartsPerMillion,
+    sulfate: PartsPerMillion,
+    chloride: PartsPerMillion,
+    sodium: PartsPerMillion,
+    magnesium: PartsPerMillion,
+    ph: Option<PH>,
     notes: Option<String>,
 }
 
