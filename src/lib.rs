@@ -1,6 +1,6 @@
 mod equipment;
 mod fermentable;
-mod hop;
+pub mod hop;
 mod mash;
 mod misc;
 mod recipe;
