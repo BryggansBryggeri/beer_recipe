@@ -2,6 +2,8 @@ use serde;
 use serde::Deserialize;
 use serde::Deserializer;
 
+use crate::RecordSet;
+
 #[derive(Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct Hop {
@@ -27,6 +29,8 @@ pub struct Hop {
     cohumulone: Option<f32>,
     myrcene: Option<f32>,
 }
+
+impl RecordSet for Hop {}
 
 #[derive(Debug, PartialEq)]
 enum Use {
@@ -143,6 +147,7 @@ mod tests {
     #[test]
     fn mash_hops_with_all_fields_shuffled() {
         let xml_input = r#"
+            <?xml version="1.0" encoding="ISO-8859-1"?>
             <HOP>
                 <AMOUNT>0.050</AMOUNT>
                 <VERSION>1</VERSION>

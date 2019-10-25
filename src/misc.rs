@@ -1,3 +1,4 @@
+use crate::utils;
 use serde;
 use serde::Deserialize;
 use serde::Deserializer;
@@ -13,6 +14,8 @@ pub struct Misc {
     use_: Use,
     time: f32,
     amount: f32,
+    #[serde(default)]
+    #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     amount_is_weight: Option<bool>,
     use_for: Option<String>,
     notes: Option<String>,

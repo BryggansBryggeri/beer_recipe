@@ -1,3 +1,4 @@
+use crate::utils;
 use crate::Percent;
 use serde;
 use serde::Deserialize;
@@ -14,6 +15,8 @@ pub struct Fermentable {
     #[serde(rename = "YIELD")]
     yield_: Percent,
     color: f32,
+    #[serde(default)]
+    #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     add_after_boil: Option<bool>,
     origin: Option<String>,
     supplier: Option<String>,
@@ -23,6 +26,8 @@ pub struct Fermentable {
     diastatic_power: Option<f32>,
     protein: Option<Percent>,
     max_in_batch: Option<Percent>,
+    #[serde(default)]
+    #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     recommend_mash: Option<bool>,
     ibu_gal_per_lb: Option<f32>,
 }

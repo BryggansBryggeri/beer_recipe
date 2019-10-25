@@ -4,6 +4,7 @@ use crate::hop::Hop;
 use crate::mash::Mash;
 use crate::misc::Misc;
 use crate::style::Style;
+use crate::utils;
 use crate::water::Water;
 use crate::yeast::Yeast;
 use serde;
@@ -46,6 +47,8 @@ pub struct Recipe {
     temp: Option<f32>,
     date: Option<String>,
     carbonation: Option<f32>,
+    #[serde(default)]
+    #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     forced_carbonation: Option<bool>,
     priming_sugar_name: Option<String>,
     carbonation_temp: Option<f32>,

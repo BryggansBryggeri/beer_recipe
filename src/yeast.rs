@@ -1,3 +1,4 @@
+use crate::utils;
 use crate::Percent;
 use serde;
 use serde::Deserialize;
@@ -12,6 +13,8 @@ pub struct Yeast {
     type_: Type,
     form: Form,
     amount: f32,
+    #[serde(default)]
+    #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     amount_is_weight: Option<bool>,
     laboratory: Option<String>,
     product_id: Option<String>,
@@ -23,6 +26,8 @@ pub struct Yeast {
     best_for: Option<String>,
     times_cultured: Option<u8>,
     max_reuse: Option<u8>,
+    #[serde(default)]
+    #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     add_to_secondary: Option<bool>,
 }
 

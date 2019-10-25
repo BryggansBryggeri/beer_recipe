@@ -1,3 +1,4 @@
+use crate::utils;
 use serde;
 use serde::Deserialize;
 
@@ -14,6 +15,8 @@ pub struct Mash {
     ph: Option<f32>,
     tun_weight: Option<f32>,
     tun_specific_heat: Option<f32>,
+    #[serde(default)]
+    #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     equip_adjust: Option<bool>,
 }
 
