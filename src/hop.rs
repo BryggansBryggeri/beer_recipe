@@ -71,7 +71,8 @@ enum Form {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_xml_rs; #[test]
+    use serde_xml_rs;
+    #[test]
     fn required_fields_only() {
         let xml_input = r"
             <HOP>
@@ -141,7 +142,7 @@ mod tests {
 
     #[test]
     fn mash_hops_with_all_fields_shuffled() {
-        let xml_input = r"
+        let xml_input = r#"
             <HOP>
                 <AMOUNT>0.050</AMOUNT>
                 <VERSION>1</VERSION>
@@ -161,7 +162,7 @@ mod tests {
                 <FORM>Leaf</FORM>
                 <TYPE>Bittering</TYPE>
                 <COHUMULONE>13.2</COHUMULONE>
-            </HOP>";
+            </HOP>"#;
         let parsed_hop: Hop = serde_xml_rs::from_str(xml_input).unwrap();
         let true_hop = Hop {
             name: "Super Hops".into(),
