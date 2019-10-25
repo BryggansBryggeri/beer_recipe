@@ -23,7 +23,7 @@ mod tests {
     use super::*;
     use serde_xml_rs;
     #[test]
-    fn required_fields_only() {
+    fn sample_water_profile() {
         let xml_input = r"
             <WATER>
                 <NAME>Burton on Trent, UK</NAME>
@@ -41,8 +41,8 @@ mod tests {
                 </NOTES>
             </WATER>
         ";
-        let parsed_yeast: Water = serde_xml_rs::from_str(xml_input).unwrap();
-        let true_yeast = Water {
+        let parsed_water: Water = serde_xml_rs::from_str(xml_input).unwrap();
+        let true_water = Water {
             name: "Burton on Trent, UK".into(),
             version: 1,
             amount: 20.0,
@@ -55,6 +55,6 @@ mod tests {
             ph: Some(8.0),
             notes: Some("Use for distinctive pale ales strongly hopped.  Very hard water accentuates the hops flavor. Example: Bass Ale".into()),
         };
-        assert_eq!(parsed_yeast, true_yeast);
+        assert_eq!(parsed_water, true_water);
     }
 }
