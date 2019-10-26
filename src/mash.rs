@@ -9,7 +9,8 @@ pub struct Mash {
     name: String,
     version: u8,
     grain_temp: f32,
-    mash_steps: Vec<MashStep>,
+    #[serde(bound(deserialize = "Vec<MashStep>: Deserialize<'de>"))]
+    mash_steps: MashSteps,
     notes: Option<String>,
     tun_temp: Option<f32>,
     sparge_weight: Option<f32>,
@@ -19,6 +20,26 @@ pub struct Mash {
     #[serde(default)]
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     equip_adjust: Option<bool>,
+}
+
+/// Wrapper type for MashStep vectors
+///
+/// Awkward extra type to conform to XML not having vectors but rather having a plural tag
+/// enclosing multiple single tag
+/// ```xml
+///<MASH_STEPS>
+///     <MASH_STEP>
+///         ...
+///     </MASH_STEP>
+///         ...
+///     <MASH_STEP>
+///     </MASH_STEP>
+///</MASH_STEPS>
+/// ```
+#[derive(Deserialize, Debug, PartialEq)]
+#[serde(rename_all = "UPPERCASE")]
+pub struct MashSteps {
+    mash_step: Vec<MashStep>,
 }
 
 #[derive(Deserialize, Debug, PartialEq)]
@@ -45,9 +66,64 @@ enum Type {
 
 #[cfg(test)]
 /// Official tests from 'http://www.beerxml.com/beerxml.htm'
-mod beerxml {
+mod beerxml_mash {
     use super::*;
     use serde_xml_rs;
+    #[test]
+    fn infusion_step() {
+        let xml_input = r"
+            <MASH>
+                <NAME>Single Step Infusion, 68 C</NAME>
+                <VERSION>1</VERSION>
+                <GRAIN_TEMP>22.0</GRAIN_TEMP>
+                <MASH_STEPS>
+                    <MASH_STEP>
+                    <NAME>Conversion Step, 68C </NAME>
+                    <VERSION>1</VERSION>
+                    <TYPE>Infusion</TYPE>
+                    <STEP_TEMP>68.0</STEP_TEMP>
+                    <STEP_TIME>60.0</STEP_TIME>
+                    <INFUSE_AMOUNT>10.0</INFUSE_AMOUNT>
+                    </MASH_STEP>
+                </MASH_STEPS>
+            </MASH>
+            ";
+        let parsed_mash: Mash = serde_xml_rs::from_str(xml_input).unwrap();
+        let true_mash_steps = MashSteps {
+            mash_step: vec![MashStep {
+                name: "Conversion Step, 68C".into(),
+                version: 1,
+                type_: Type::Infusion,
+                step_temp: 68.0,
+                step_time: 60.0,
+                infuse_amount: Some(10.0),
+                ramp_time: None,
+                end_temp: None,
+            }],
+        };
+        let true_mash = Mash {
+            name: "Single Step Infusion, 68 C".into(),
+            version: 1,
+            grain_temp: 22.0,
+            mash_steps: true_mash_steps,
+            notes: None,
+            tun_temp: None,
+            sparge_weight: None,
+            ph: None,
+            tun_weight: None,
+            tun_specific_heat: None,
+            equip_adjust: None,
+        };
+        assert_eq!(parsed_mash, true_mash);
+    }
+}
+
+#[cfg(test)]
+/// Official tests from 'http://www.beerxml.com/beerxml.htm'
+mod beerxml_mash_step {
+    use super::*;
+    use serde_xml_rs;
+
     #[test]
     fn infusion_step() {
         let xml_input = r"
@@ -68,6 +144,31 @@ mod beerxml {
             step_temp: 68.0,
             step_time: 70.0,
             infuse_amount: Some(5.0),
+            ramp_time: None,
+            end_temp: None,
+        };
+        assert_eq!(parsed_mash_step, true_mash_step);
+    }
+
+    #[test]
+    fn decoction_step() {
+        let xml_input = r"
+            <MASH_STEP>
+                 <NAME>Conversion Decoction</NAME>
+                 <VERSION>1</VERSION>
+                 <TYPE>Decoction</TYPE>
+                 <STEP_TEMP>68.0</STEP_TEMP>
+                <STEP_TIME>90.0</STEP_TIME>
+            </MASH_STEP>
+            ";
+        let parsed_mash_step: MashStep = serde_xml_rs::from_str(xml_input).unwrap();
+        let true_mash_step = MashStep {
+            name: "Conversion Decoction".into(),
+            version: 1,
+            type_: Type::Decoction,
+            step_temp: 68.0,
+            step_time: 90.0,
+            infuse_amount: None,
             ramp_time: None,
             end_temp: None,
         };
