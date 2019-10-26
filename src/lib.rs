@@ -1,3 +1,12 @@
+//! # Beer recipe
+//!
+//! A library for handling beer recipes
+//!
+//! ## BeerXML
+//!
+//! The starting point is the BeerXML standard:
+//!
+//! [http://www.beerxml.com/beerxml.htm](http://www.beerxml.com/beerxml.htm)
 use serde;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
