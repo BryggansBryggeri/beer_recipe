@@ -11,7 +11,6 @@ pub struct Hop {
     version: u8,
     alpha: f32,
     amount: f32,
-    /// Original beerxml key is `use`
     #[serde(rename = "USE")]
     use_: Use,
     /// Minutes
