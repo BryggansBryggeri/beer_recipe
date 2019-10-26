@@ -1,3 +1,8 @@
+//! # Style
+//!
+//! The term "style" encompasses beer styles.
+//! The beer style may be from the BJCP style guide, Australian, UK or local style guides.
+//! Generally a recipe is designed to one style.
 use serde;
 use serde::{Deserialize, Serialize};
 
@@ -15,15 +20,25 @@ pub struct Style {
     style_guide: String,
     #[serde(rename = "TYPE")]
     type_: Type,
+    ///The minimum original specific gravity as measured relative to water.
     og_min: SpecificGravity,
+    ///The maximum original specific gravity as measured relative to water.
     og_max: SpecificGravity,
+    ///The minimum final specific gravity as measured relative to water.
     fg_min: SpecificGravity,
+    ///The maximum final specific gravity as measured relative to water.
     fg_max: SpecificGravity,
+    ///The recommended minimum bitterness for this style as measured in
+    ///International Bitterness Units (IBUs)
     ibu_min: IBU,
+    ///The recommended maximum bitterness for this style as measured in
+    ///International Bitterness Units (IBUs)
     ibu_max: IBU,
     color_min: SRMColor,
     color_max: SRMColor,
+    ///Minimum recommended carbonation for this style in volumes of CO2
     carb_min: Option<VolumesCO2>,
+    ///Maximum recommended carbonation for this style in volumes of CO2
     carb_max: Option<VolumesCO2>,
     abv_min: Option<ABV>,
     abv_max: Option<ABV>,
@@ -161,47 +176,5 @@ mod beerxml {
             examples: Some("Guinness".into()),
         };
         assert_eq!(parsed_style, true_style);
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use serde_json;
-    #[test]
-    fn test_json_output() {
-        let xml_input = r"
-            <STYLE>
-                <NAME>Dry Stout</NAME>
-                <CATEGORY>Stout</CATEGORY>
-                <CATEGORY_NUMBER>16</CATEGORY_NUMBER>
-                <STYLE_LETTER>A</STYLE_LETTER>
-                <STYLE_GUIDE>BJCP</STYLE_GUIDE>
-                <VERSION>1</VERSION>
-                <TYPE>Ale</TYPE>
-                <OG_MIN>1.035</OG_MIN>
-                <OG_MAX>1.050</OG_MAX>
-                <FG_MIN>1.007</FG_MIN>
-                <FG_MAX>1.011</FG_MAX>
-                <IBU_MIN>30.0</IBU_MIN>
-                <IBU_MAX>50.0</IBU_MAX>
-                <COLOR_MIN>35.0</COLOR_MIN>
-                <COLOR_MAX>200.0</COLOR_MAX>
-                <ABV_MIN>3.2</ABV_MIN>
-                <ABV_MAX>5.5</ABV_MAX>
-                <CARB_MIN>1.6</CARB_MIN>
-                <CARB_MAX>2.1</CARB_MAX>
-                <NOTES>Famous Irish Stout.  Dry, roasted, almost coffee like flavor.  Often soured with pasteurized sour beer. 
-                </NOTES>
-                <PROFILE>Full body perception due to flaked barley, though starting gravity may be low.  Dry roasted flavor.
-                </PROFILE>
-                <INGREDIENTS>Made with black barley and flaked barley,  Hard water.  Irish Ale Yeast.
-                </INGREDIENTS>
-                <EXAMPLES>Guinness</EXAMPLES>
-            </STYLE>
-            ";
-        let parsed_style: Style = serde_xml_rs::from_str(xml_input).unwrap();
-        let json_string = serde_json::json!(parsed_style);
-        println!("{}", serde_json::to_string_pretty(&json_string).unwrap());
     }
 }

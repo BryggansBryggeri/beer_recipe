@@ -1,3 +1,7 @@
+//! # Water
+//!
+//! The term "water" encompasses water profiles.
+//! Though not strictly required for recipes, the water record allows supporting programs to record the water profile used for brewing a particular batch.
 use crate::{PartsPerMillion, PH};
 use serde;
 use serde::Deserialize;

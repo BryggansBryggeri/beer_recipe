@@ -1,5 +1,9 @@
+//! # Equipment
+//!
+//! Though an equipment record is optional, when used it in a recipe or on its own it provides details needed to calculate total water usage as well as water needed for each step.
+//! It also contains information about the thermal parameters of the mash tun and large batch hop utilization factors.
 use crate::utils;
-use crate::Percent;
+use crate::{Percent, Time, Volume};
 use serde;
 use serde::Deserialize;
 
@@ -8,20 +12,38 @@ use serde::Deserialize;
 pub struct Equipment {
     name: String,
     version: u8,
+    ///The pre-boil volume used in this particular instance for this equipment setup.
+    ///Note that this may be a calculated value depending on the `calc_boil_volume` parameter.
     boil_size: f32,
+    ///The target volume of the batch at the start of fermentation.
     batch_size: f32,
-    tun_volume: Option<f32>,
+    ///Volume of the mash tun in liters.
+    tun_volume: Option<Volume>,
+    ///Weight of the mash tun in kilograms.
+    ///Used primarily to calculate the thermal parameters of
+    ///the mash tun – in conjunction with the volume and specific heat.
     tun_weight: Option<f32>,
+    ///Cal/(gram deg C)
     tun_specific_heat: Option<f32>,
-    top_up_water: Option<f32>,
-    trub_chiller_loss: Option<f32>,
+    ///The amount of top up water normally added just prior to starting fermentation.
+    top_up_water: Option<Volume>,
+    ///The amount of wort normally lost during transition from the boiler to the fermentation vessel.
+    ///Includes both unusable wort due to trub and wort lost to the chiller and transfer systems.
+    trub_chiller_loss: Option<Volume>,
+    ///The percentage of wort lost to evaporation per hour
     evap_rate: Option<f32>,
-    boil_time: Option<f32>,
+    boil_time: Option<Time>,
+    ///If `true`, then
+    ///`boil_size = (batch_size - top_up_water - trub_chiller_loss) * (1 + boil_time * evap_rate
+    ///)`.
+    ///Then `boil size` should match this value.
     #[serde(default)]
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     calc_boil_volume: Option<bool>,
-    lauter_deadspace: Option<f32>,
-    top_up_kettle: Option<f32>,
+    ///Amount lost to the lauter tun and equipment associated with the lautering process.
+    lauter_deadspace: Option<Volume>,
+    ///Amount normally added to the boil kettle before the boil.
+    top_up_kettle: Option<Volume>,
     hop_utilization: Option<Percent>,
     notes: Option<String>,
 }

@@ -1,3 +1,6 @@
+//!# Fermentable
+//!
+//!The term "fermentable" encompasses all fermentable items that contribute substantially to the beer including extracts, grains, sugars, honey, fruits.
 use crate::utils;
 use crate::Percent;
 use serde;
@@ -11,18 +14,27 @@ pub struct Fermentable {
     version: u8,
     #[serde(rename = "TYPE")]
     type_: Type,
+    ///Weight in kilograms.
     amount: f32,
     #[serde(rename = "YIELD")]
     yield_: Percent,
+    ///The color of the item in Lovibond Units (SRM for liquid extracts).
     color: f32,
     #[serde(default)]
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
+    ///May be `true` if this item is normally added after the boil.
+    ///
+    ///The default value is `false` since most grains are added during the mash or boil.
     add_after_boil: Option<bool>,
     origin: Option<String>,
     supplier: Option<String>,
     notes: Option<String>,
+    ///Percent difference between the coarse grain yield and fine grain yield.
+    ///
+    ///Only appropriate for a "Grain" or "Adjunct" type, otherwise this value is ignored.
     coarse_fine_diff: Option<Percent>,
     moisture: Option<Percent>,
+    ///The diastatic power of the grain as measured in "Lintner" units.
     diastatic_power: Option<f32>,
     protein: Option<Percent>,
     max_in_batch: Option<Percent>,

@@ -1,3 +1,5 @@
+//! # Hop
+use crate::{Percent, Time};
 use serde;
 use serde::Deserialize;
 use serde::Deserializer;
@@ -9,24 +11,27 @@ use crate::RecordSet;
 pub struct Hop {
     name: String,
     version: u8,
-    alpha: f32,
+    alpha: Percent,
     amount: f32,
     #[serde(rename = "USE")]
     use_: Use,
-    /// Minutes
-    time: f32,
+    /// The time as measured in minutes.
+    time: Time,
     notes: Option<String>,
     #[serde(rename = "TYPE")]
     type_: Option<Type>,
     form: Option<Form>,
-    beta: Option<f32>,
-    hsi: Option<f32>,
+    beta: Option<Percent>,
+    ///Hop Stability Index
+    ///
+    ///Defined as the percentage of hop alpha lost in 6 months of storage
+    hsi: Option<Percent>,
     origin: Option<String>,
     substitutes: Option<String>,
-    humulene: Option<f32>,
-    caryophyllene: Option<f32>,
-    cohumulone: Option<f32>,
-    myrcene: Option<f32>,
+    humulene: Option<Percent>,
+    caryophyllene: Option<Percent>,
+    cohumulone: Option<Percent>,
+    myrcene: Option<Percent>,
 }
 
 impl RecordSet for Hop {}

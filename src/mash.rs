@@ -1,22 +1,36 @@
+//! # Mash
+//!
+//!A mash profile is a record used either within a recipe or outside the recipe to precisely
+//!specify the mash method used.  The record consists of some informational items followed by a
+//!<MASH_STEPS> record that contains the actual mash steps.
 use crate::utils;
 use crate::{Temperature, Time, Volume};
 use serde;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug, PartialEq)]
+///Mash profile for a recipe
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct Mash {
     name: String,
     version: u8,
+    ///The temperature of the grain before adding it to the mash.
     grain_temp: f32,
     #[serde(bound(deserialize = "Vec<MashStep>: Deserialize<'de>"))]
     mash_steps: MashSteps,
     notes: Option<String>,
-    tun_temp: Option<f32>,
-    sparge_weight: Option<f32>,
+    ///Grain tun temperature - may be used to adjust the infusion temperature for equipment.
+    tun_temp: Option<Temperature>,
+    ///Temperature of the sparge water
+    sparge_temp: Option<Temperature>,
     ph: Option<f32>,
     tun_weight: Option<f32>,
+    ///Cal/(gram deg C)
     tun_specific_heat: Option<f32>,
+    ///If `true`, mash infusion and decoction calculations should take into account the temperature effects of the equipment
+    ///(tun specific heat and tun weight).
+    ///If `false`, the tun is assumed to be pre-heated.
+    ///Default is `false`.
     #[serde(default)]
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     equip_adjust: Option<bool>,
@@ -31,18 +45,23 @@ pub struct Mash {
 ///     <MASH_STEP>
 ///         ...
 ///     </MASH_STEP>
-///         ...
+///     .
+///     .
+///     .
 ///     <MASH_STEP>
+///         ...
 ///     </MASH_STEP>
 ///</MASH_STEPS>
 /// ```
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct MashSteps {
     mash_step: Vec<MashStep>,
 }
 
-#[derive(Deserialize, Debug, PartialEq)]
+/// A mash step is an internal record used within a mash profile to denote a separate step in a multi-step mash.
+/// A mash step is not intended for use outside of a mash profile.
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
 #[serde(rename = "MASH_STEP")]
 pub struct MashStep {
@@ -57,7 +76,7 @@ pub struct MashStep {
     end_temp: Option<Temperature>,
 }
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 enum Type {
     Infusion,
     Temperature,
@@ -108,7 +127,7 @@ mod beerxml_mash {
             mash_steps: true_mash_steps,
             notes: None,
             tun_temp: None,
-            sparge_weight: None,
+            sparge_temp: None,
             ph: None,
             tun_weight: None,
             tun_specific_heat: None,
@@ -173,5 +192,41 @@ mod beerxml_mash_step {
             end_temp: None,
         };
         assert_eq!(parsed_mash_step, true_mash_step);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json;
+    #[test]
+    fn test_json_output() {
+        let xml_input = r"
+            <MASH>
+                <NAME>Single Step Infusion, 68 C</NAME>
+                <VERSION>1</VERSION>
+                <GRAIN_TEMP>22.0</GRAIN_TEMP>
+                <MASH_STEPS>
+                    <MASH_STEP>
+                        <NAME>Conversion Step 1</NAME>
+                        <VERSION>1</VERSION>
+                        <TYPE>Infusion</TYPE>
+                        <STEP_TEMP>68.0</STEP_TEMP>
+                        <STEP_TIME>60.0</STEP_TIME>
+                        <INFUSE_AMOUNT>10.0</INFUSE_AMOUNT>
+                    </MASH_STEP>
+                    <MASH_STEP>
+                        <NAME>Conversion Step 2</NAME>
+                        <VERSION>1</VERSION>
+                        <TYPE>Temperature</TYPE>
+                        <STEP_TEMP>70.0</STEP_TEMP>
+                        <STEP_TIME>10.0</STEP_TIME>
+                    </MASH_STEP>
+                </MASH_STEPS>
+            </MASH>
+            ";
+        let parsed_style: Mash = serde_xml_rs::from_str(xml_input).unwrap();
+        let json_string = serde_json::json!(parsed_style);
+        println!("{}", serde_json::to_string_pretty(&json_string).unwrap());
     }
 }

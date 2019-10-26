@@ -1,3 +1,7 @@
+//! # Misc
+//!
+//! The term "misc" encompasses all non-fermentable miscellaneous ingredients that are not hops or yeast and do not significantly change the gravity of the beer.
+//! For example: spices, clarifying agents, water treatments, etc…
 use crate::utils;
 use serde;
 use serde::Deserialize;
@@ -12,7 +16,10 @@ pub struct Misc {
     type_: Type,
     #[serde(rename = "USE")]
     use_: Use,
+    ///Amount of time in minutes.
     time: f32,
+    ///Amount of item used. The default measurements are by weight, but this may be the
+    ///measurement in volume units if `amount_is_weight` is set to `true`
     amount: f32,
     #[serde(default)]
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]

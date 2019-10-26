@@ -1,3 +1,6 @@
+//! # Yeast
+//!
+//! The term "yeast" encompasses all yeasts, including dry yeast, liquid yeast and yeast starters.
 use crate::utils;
 use crate::Percent;
 use serde;
@@ -12,6 +15,9 @@ pub struct Yeast {
     #[serde(rename = "TYPE")]
     type_: Type,
     form: Form,
+    ///The amount of yeast, measured in liters. For a starter this is the size of the starter. If
+    ///the flag [`amount_is_weight`](struct.Yeast.html) is set to `true` then this measurement is in kilograms and not
+    ///liters.
     amount: f32,
     #[serde(default)]
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
