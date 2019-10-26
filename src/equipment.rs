@@ -27,7 +27,8 @@ pub struct Equipment {
 }
 
 #[cfg(test)]
-mod tests {
+/// Official tests from 'http://www.beerxml.com/beerxml.htm'
+mod beerxml {
     use super::*;
     use serde_xml_rs;
     #[test]
