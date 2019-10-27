@@ -6,7 +6,8 @@
 use serde;
 use serde::{Deserialize, Serialize};
 
-use crate::{RecordSet, SRMColor, SpecificGravity, VolumesCO2, ABV, IBU};
+use crate::units::*;
+use crate::RecordSet;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]

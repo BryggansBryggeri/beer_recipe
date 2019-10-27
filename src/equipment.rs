@@ -2,8 +2,8 @@
 //!
 //! Though an equipment record is optional, when used it in a recipe or on its own it provides details needed to calculate total water usage as well as water needed for each step.
 //! It also contains information about the thermal parameters of the mash tun and large batch hop utilization factors.
+use crate::units::*;
 use crate::utils;
-use crate::{Percent, Time, Volume};
 use serde;
 use serde::Deserialize;
 

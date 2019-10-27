@@ -3,8 +3,8 @@
 //!A mash profile is a record used either within a recipe or outside the recipe to precisely
 //!specify the mash method used.  The record consists of some informational items followed by a
 //!<MASH_STEPS> record that contains the actual mash steps.
+use crate::units::*;
 use crate::utils;
-use crate::{Temperature, Time, Volume};
 use serde;
 use serde::{Deserialize, Serialize};
 

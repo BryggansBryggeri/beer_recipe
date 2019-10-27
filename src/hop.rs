@@ -1,5 +1,5 @@
 //! # Hop
-use crate::{Percent, Time};
+use crate::units::*;
 use serde;
 use serde::Deserialize;
 use serde::Deserializer;

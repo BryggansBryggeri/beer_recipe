@@ -17,24 +17,10 @@ mod mash;
 mod misc;
 mod recipe;
 mod style;
+mod units;
 mod utils;
 mod water;
 mod yeast;
-
-pub type Percent = f32;
-pub type PartsPerMillion = f32;
-pub type PH = f32;
-pub type SpecificGravity = f32;
-pub type IBU = f32;
-pub type SRMColor = f32;
-pub type VolumesCO2 = f32;
-pub type ABV = Percent;
-/// Celsius
-pub type Temperature = f32;
-/// Liters
-pub type Volume = f32;
-/// Minutes
-pub type Time = f32;
 
 pub trait RecordSet {}
 
@@ -47,12 +33,4 @@ where
 {
     #[serde(bound(deserialize = "Vec<T>: Deserialize<'de>"))]
     pub hop: Vec<T>,
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
 }
