@@ -10,17 +10,17 @@
 use serde;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
-mod equipment;
-mod fermentable;
+pub mod equipment;
+pub mod fermentable;
 pub mod hop;
-mod mash;
-mod misc;
-mod recipe;
-mod style;
-mod units;
-mod utils;
-mod water;
-mod yeast;
+pub mod mash;
+pub mod misc;
+pub mod recipe;
+pub mod style;
+pub mod units;
+pub mod utils;
+pub mod water;
+pub mod yeast;
 
 pub trait RecordSet {}
 

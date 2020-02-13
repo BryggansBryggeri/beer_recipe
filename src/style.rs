@@ -12,47 +12,47 @@ use crate::RecordSet;
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct Style {
-    name: String,
-    category: String,
-    version: u8,
+    pub name: String,
+    pub category: String,
+    pub version: u8,
     /// Supposed to be text but seems to be a semantic u8
-    category_number: u8,
-    style_letter: String,
-    style_guide: String,
+    pub category_number: u8,
+    pub style_letter: String,
+    pub style_guide: String,
     #[serde(rename = "TYPE")]
-    type_: Type,
+    pub type_: Type,
     ///The minimum original specific gravity as measured relative to water.
-    og_min: SpecificGravity,
+    pub og_min: SpecificGravity,
     ///The maximum original specific gravity as measured relative to water.
-    og_max: SpecificGravity,
+    pub og_max: SpecificGravity,
     ///The minimum final specific gravity as measured relative to water.
-    fg_min: SpecificGravity,
+    pub fg_min: SpecificGravity,
     ///The maximum final specific gravity as measured relative to water.
-    fg_max: SpecificGravity,
+    pub fg_max: SpecificGravity,
     ///The recommended minimum bitterness for this style as measured in
     ///International Bitterness Units (IBUs)
-    ibu_min: IBU,
+    pub ibu_min: IBU,
     ///The recommended maximum bitterness for this style as measured in
     ///International Bitterness Units (IBUs)
-    ibu_max: IBU,
-    color_min: SRMColor,
-    color_max: SRMColor,
+    pub ibu_max: IBU,
+    pub color_min: SRMColor,
+    pub color_max: SRMColor,
     ///Minimum recommended carbonation for this style in volumes of CO2
-    carb_min: Option<VolumesCO2>,
+    pub carb_min: Option<VolumesCO2>,
     ///Maximum recommended carbonation for this style in volumes of CO2
-    carb_max: Option<VolumesCO2>,
-    abv_min: Option<ABV>,
-    abv_max: Option<ABV>,
-    notes: Option<String>,
-    profile: Option<String>,
-    ingredients: Option<String>,
-    examples: Option<String>,
+    pub carb_max: Option<VolumesCO2>,
+    pub abv_min: Option<ABV>,
+    pub abv_max: Option<ABV>,
+    pub notes: Option<String>,
+    pub profile: Option<String>,
+    pub ingredients: Option<String>,
+    pub examples: Option<String>,
 }
 
 impl RecordSet for Style {}
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
-enum Type {
+pub enum Type {
     Lager,
     Ale,
     Mead,

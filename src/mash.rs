@@ -12,28 +12,28 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct Mash {
-    name: String,
-    version: u8,
+    pub name: String,
+    pub version: u8,
     ///The temperature of the grain before adding it to the mash.
-    grain_temp: f32,
+    pub grain_temp: f32,
     #[serde(bound(deserialize = "Vec<MashStep>: Deserialize<'de>"))]
-    mash_steps: MashSteps,
-    notes: Option<String>,
+    pub mash_steps: MashSteps,
+    pub notes: Option<String>,
     ///Grain tun temperature - may be used to adjust the infusion temperature for equipment.
-    tun_temp: Option<Temperature>,
+    pub tun_temp: Option<Temperature>,
     ///Temperature of the sparge water
-    sparge_temp: Option<Temperature>,
-    ph: Option<f32>,
-    tun_weight: Option<f32>,
+    pub sparge_temp: Option<Temperature>,
+    pub ph: Option<f32>,
+    pub tun_weight: Option<f32>,
     ///Cal/(gram deg C)
-    tun_specific_heat: Option<f32>,
+    pub tun_specific_heat: Option<f32>,
     ///If `true`, mash infusion and decoction calculations should take into account the temperature effects of the equipment
     ///(tun specific heat and tun weight).
     ///If `false`, the tun is assumed to be pre-heated.
     ///Default is `false`.
     #[serde(default)]
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
-    equip_adjust: Option<bool>,
+    pub equip_adjust: Option<bool>,
 }
 
 /// Wrapper type for MashStep vectors
@@ -56,7 +56,7 @@ pub struct Mash {
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct MashSteps {
-    mash_step: Vec<MashStep>,
+    pub mash_step: Vec<MashStep>,
 }
 
 /// A mash step is an internal record used within a mash profile to denote a separate step in a multi-step mash.
@@ -65,19 +65,19 @@ pub struct MashSteps {
 #[serde(rename_all = "UPPERCASE")]
 #[serde(rename = "MASH_STEP")]
 pub struct MashStep {
-    name: String,
-    version: u8,
+    pub name: String,
+    pub version: u8,
     #[serde(rename = "TYPE")]
-    type_: Type,
-    infuse_amount: Option<Volume>,
-    step_temp: Temperature,
-    step_time: Time,
-    ramp_time: Option<Time>,
-    end_temp: Option<Temperature>,
+    pub type_: Type,
+    pub infuse_amount: Option<Volume>,
+    pub step_temp: Temperature,
+    pub step_time: Time,
+    pub ramp_time: Option<Time>,
+    pub end_temp: Option<Temperature>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
-enum Type {
+pub enum Type {
     Infusion,
     Temperature,
     Decoction,
