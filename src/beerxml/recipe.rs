@@ -1,6 +1,6 @@
 use crate::beerxml::equipment::Equipment;
 use crate::beerxml::fermentable::Fermentables;
-use crate::beerxml::hop::Hops;
+use crate::beerxml::hop::{Hop, Hops};
 use crate::beerxml::mash::Mash;
 use crate::beerxml::misc::Miscs;
 use crate::beerxml::style::Style;
@@ -55,6 +55,12 @@ pub struct Recipe {
     carbonation_temp: Option<f32>,
     priming_sugar_equiv: Option<f32>,
     keg_priming_factor: Option<f32>,
+}
+
+impl Recipe {
+    pub fn hops(&self) -> Vec<Hop> {
+        self.hops.hop.clone()
+    }
 }
 
 #[derive(Debug, PartialEq)]
