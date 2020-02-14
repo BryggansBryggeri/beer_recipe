@@ -1,12 +1,12 @@
-use crate::equipment::Equipment;
-use crate::fermentable::Fermentables;
-use crate::hop::Hops;
-use crate::mash::Mash;
-use crate::misc::Miscs;
-use crate::style::Style;
+use crate::beerxml::equipment::Equipment;
+use crate::beerxml::fermentable::Fermentables;
+use crate::beerxml::hop::Hops;
+use crate::beerxml::mash::Mash;
+use crate::beerxml::misc::Miscs;
+use crate::beerxml::style::Style;
+use crate::beerxml::water::Waters;
+use crate::beerxml::yeast::Yeasts;
 use crate::utils;
-use crate::water::Waters;
-use crate::yeast::Yeasts;
 use serde;
 use serde::{Deserialize, Deserializer};
 
@@ -85,9 +85,9 @@ impl<'de> Deserialize<'de> for Type {
 /// RATING -> TEST_RATING
 mod beerxml {
     use super::*;
-    use crate::mash::Type as MashStepType;
-    use crate::mash::{MashStep, MashSteps};
-    use crate::style::Type as StyleType;
+    use crate::beerxml::mash::Type as MashStepType;
+    use crate::beerxml::mash::{MashStep, MashSteps};
+    use crate::beerxml::style::Type as StyleType;
     use serde_xml_rs;
     #[test]
     fn minimal_recipe() {
