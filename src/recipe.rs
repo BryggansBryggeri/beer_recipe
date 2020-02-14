@@ -1,13 +1,12 @@
 use crate::equipment::Equipment;
-use crate::fermentable::Fermentable;
-use crate::hop::Hop;
+use crate::fermentable::Fermentables;
+use crate::hop::Hops;
 use crate::mash::Mash;
-use crate::misc::Misc;
+use crate::misc::Miscs;
 use crate::style::Style;
 use crate::utils;
-use crate::water::Water;
-use crate::yeast::Yeast;
-use crate::RecordSet;
+use crate::water::Waters;
+use crate::yeast::Yeasts;
 use serde;
 use serde::{Deserialize, Deserializer};
 
@@ -27,17 +26,11 @@ pub struct Recipe {
     boil_time: f32,
     /// Not used for `Type::Extract`
     efficiency: f32,
-    //#[serde(rename = "HOP", default = "default_vec::<Hop>")]
-    #[serde(rename = "HOP", default = "Vec::new")]
-    hops: Vec<Hop>,
-    #[serde(rename = "FERMENTABLE", default = "Vec::new")]
-    fermentables: Vec<Fermentable>,
-    #[serde(rename = "MISC", default = "Vec::new")]
-    miscs: Vec<Misc>,
-    #[serde(rename = "YEAST", default = "Vec::new")]
-    yeasts: Vec<Yeast>,
-    #[serde(rename = "WATER", default = "Vec::new")]
-    waters: Vec<Water>,
+    hops: Hops,
+    fermentables: Fermentables,
+    miscs: Miscs,
+    yeasts: Yeasts,
+    waters: Waters,
     mash: Mash,
     notes: Option<String>,
     taste_notes: Option<String>,
@@ -63,8 +56,6 @@ pub struct Recipe {
     priming_sugar_equiv: Option<f32>,
     keg_priming_factor: Option<f32>,
 }
-
-impl RecordSet for Recipe {}
 
 #[derive(Debug, PartialEq)]
 enum Type {
@@ -212,11 +203,11 @@ mod beerxml {
             boil_size: 20.82,
             boil_time: 60.0,
             efficiency: 72.0,
-            hops: Vec::new(),
-            fermentables: Vec::new(),
-            miscs: Vec::new(),
-            yeasts: Vec::new(),
-            waters: Vec::new(),
+            hops: Hops::default(),
+            fermentables: Fermentables::default(),
+            miscs: Miscs::default(),
+            yeasts: Yeasts::default(),
+            waters: Waters::default(),
             mash: Mash {
                 name: "Single Step Infusion, 68 C".into(),
                 version: 1,

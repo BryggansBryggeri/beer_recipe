@@ -45,6 +45,13 @@ enum Use {
     Aroma,
 }
 
+#[derive(Deserialize, Debug, PartialEq, Default)]
+#[serde(rename_all = "UPPERCASE")]
+pub struct Hops {
+    #[serde(default = "Vec::new")]
+    pub hop: Vec<Hop>,
+}
+
 impl<'de> Deserialize<'de> for Use {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

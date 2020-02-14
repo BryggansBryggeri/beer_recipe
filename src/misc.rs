@@ -28,6 +28,13 @@ pub struct Misc {
     notes: Option<String>,
 }
 
+#[derive(Deserialize, Debug, PartialEq, Default)]
+#[serde(rename_all = "UPPERCASE")]
+pub struct Miscs {
+    #[serde(default = "Vec::new")]
+    pub misc: Vec<Misc>,
+}
+
 #[derive(Deserialize, Debug, PartialEq)]
 enum Use {
     Boil,

@@ -37,6 +37,13 @@ pub struct Yeast {
     add_to_secondary: Option<bool>,
 }
 
+#[derive(Deserialize, Debug, PartialEq, Default)]
+#[serde(rename_all = "UPPERCASE")]
+pub struct Yeasts {
+    #[serde(default = "Vec::new")]
+    pub yeast: Vec<Yeast>,
+}
+
 #[derive(Deserialize, Debug, PartialEq)]
 enum Type {
     Ale,

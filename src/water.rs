@@ -22,6 +22,13 @@ pub struct Water {
     notes: Option<String>,
 }
 
+#[derive(Deserialize, Debug, PartialEq, Default)]
+#[serde(rename_all = "UPPERCASE")]
+pub struct Waters {
+    #[serde(default = "Vec::new")]
+    pub water: Vec<Water>,
+}
+
 #[cfg(test)]
 /// Official tests from 'http://www.beerxml.com/beerxml.htm'
 mod beerxml {

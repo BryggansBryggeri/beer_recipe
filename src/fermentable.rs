@@ -5,8 +5,7 @@ use crate::units::*;
 use crate::utils;
 use crate::RecordSet;
 use serde;
-use serde::Deserialize;
-use serde::Deserializer;
+use serde::{Deserialize, Deserializer, Serialize};
 
 #[derive(Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
@@ -46,6 +45,13 @@ pub struct Fermentable {
 }
 
 impl RecordSet for Fermentable {}
+
+#[derive(Deserialize, Debug, PartialEq, Default)]
+#[serde(rename_all = "UPPERCASE")]
+pub struct Fermentables {
+    #[serde(default = "Vec::new")]
+    pub fermentable: Vec<Fermentable>,
+}
 
 #[derive(Debug, PartialEq)]
 enum Type {

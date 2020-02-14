@@ -53,9 +53,10 @@ pub struct Mash {
 ///     </MASH_STEP>
 ///</MASH_STEPS>
 /// ```
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Default)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct MashSteps {
+    #[serde(default = "Vec::new")]
     pub mash_step: Vec<MashStep>,
 }
 
@@ -192,41 +193,5 @@ mod beerxml_mash_step {
             end_temp: None,
         };
         assert_eq!(parsed_mash_step, true_mash_step);
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use serde_json;
-    #[test]
-    fn test_json_output() {
-        let xml_input = r"
-            <MASH>
-                <NAME>Single Step Infusion, 68 C</NAME>
-                <VERSION>1</VERSION>
-                <GRAIN_TEMP>22.0</GRAIN_TEMP>
-                <MASH_STEPS>
-                    <MASH_STEP>
-                        <NAME>Conversion Step 1</NAME>
-                        <VERSION>1</VERSION>
-                        <TYPE>Infusion</TYPE>
-                        <STEP_TEMP>68.0</STEP_TEMP>
-                        <STEP_TIME>60.0</STEP_TIME>
-                        <INFUSE_AMOUNT>10.0</INFUSE_AMOUNT>
-                    </MASH_STEP>
-                    <MASH_STEP>
-                        <NAME>Conversion Step 2</NAME>
-                        <VERSION>1</VERSION>
-                        <TYPE>Temperature</TYPE>
-                        <STEP_TEMP>70.0</STEP_TEMP>
-                        <STEP_TIME>10.0</STEP_TIME>
-                    </MASH_STEP>
-                </MASH_STEPS>
-            </MASH>
-            ";
-        let parsed_style: Mash = serde_xml_rs::from_str(xml_input).unwrap();
-        let json_string = serde_json::json!(parsed_style);
-        println!("{}", serde_json::to_string_pretty(&json_string).unwrap());
     }
 }
