@@ -9,10 +9,10 @@ use crate::RecordSet;
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct Hop {
-    name: String,
+    pub name: String,
     version: u8,
     alpha: Percent,
-    amount: f32,
+    pub amount: f32,
     #[serde(rename = "USE")]
     use_: Use,
     /// The time as measured in minutes.

@@ -15,8 +15,7 @@ pub struct Style {
     pub name: String,
     pub category: String,
     pub version: u8,
-    /// Supposed to be text but seems to be a semantic u8
-    pub category_number: u8,
+    pub category_number: String,
     pub style_letter: String,
     pub style_guide: String,
     #[serde(rename = "TYPE")]
@@ -96,7 +95,7 @@ mod beerxml {
             version: 1,
             notes: Some("Famous beer of Pilsen, Czech republic.  Light to medium body with some sweetness.  Saaz hop flavor and aroma with no lingering bitterness.".into()),
             type_: Type::Lager,
-            category_number: 2,
+            category_number: "2".into(),
             style_letter: "A".into(),
             style_guide: "BJCP".into(),
             og_min: 1.044,
@@ -157,7 +156,7 @@ mod beerxml {
             version: 1,
             notes: Some("Famous Irish Stout.  Dry, roasted, almost coffee like flavor.  Often soured with pasteurized sour beer.".into()),
             type_: Type::Ale,
-            category_number: 16,
+            category_number: "16".into(),
             style_letter: "A".into(),
             style_guide: "BJCP".into(),
             og_min: 1.035,

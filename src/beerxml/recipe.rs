@@ -13,7 +13,7 @@ use serde::{Deserialize, Deserializer};
 #[derive(Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct Recipe {
-    name: String,
+    pub name: String,
     version: u8,
     #[serde(rename = "TYPE")]
     type_: Type,
@@ -21,7 +21,7 @@ pub struct Recipe {
     equipment: Option<Equipment>,
     brewer: String,
     asst_brewer: Option<String>,
-    batch_size: f32,
+    pub batch_size: f32,
     boil_size: f32,
     boil_time: f32,
     /// Not used for `Type::Extract`
@@ -160,7 +160,7 @@ mod beerxml {
             style: Style {
                 name: "Dry Stout".into(),
                 category: "Stout".into(),
-                category_number: 16,
+                category_number: "16".into(),
                 style_letter: "A".into(),
                 style_guide: "BJCP".into(),
                 version: 1,

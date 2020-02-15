@@ -1,32 +1,49 @@
 use beer_recipe::beerxml::recipe::Recipe;
+use std::f32;
 use std::fs;
 use std::io::prelude::*;
 use std::path;
 
 fn main() {
-    let recipe_files = list_recipes("../recipe/recept_arkiv");
-    for file in recipe_files {
-        let raw_read = match read_file_to_string(&file.path()) {
-            Ok(raw_read) => raw_read,
-            Err(err) => panic!("File read"),
-        };
-        let recipe: Result<Recipe, _> = serde_xml_rs::from_str(&raw_read);
-        println!(
-            "{}: {}",
-            &file.path().as_path().file_name().unwrap().to_str().unwrap(),
-            recipe.is_ok()
-        );
-    }
+    let recipe_files = list_recipes("src/bin/current");
+
+    let recipes = recipe_files
+        .iter()
+        .map(|file| read_file_to_string(file))
+        .filter_map(Result::ok)
+        .map(|raw| serde_xml_rs::from_str::<Recipe>(&raw))
+        .filter_map(Result::ok);
+    let max_hop = recipes
+        .map(|recipe| {
+            println!("\nRecipe: {}\n---------------", recipe.name);
+            max_hop_amount_in_recipe(&recipe)
+        })
+        .fold(0. / 0., f32::max);
+    println!("\n\nLargest single hop amount found: {}kg/l", max_hop);
 }
 
-pub fn read_file_to_string<P: AsRef<path::Path>>(file_name: P) -> std::io::Result<String> {
+fn max_hop_amount_in_recipe(recipe: &Recipe) -> f32 {
+    let hops = recipe.hops();
+    hops.iter()
+        .map(|hop| {
+            println!(
+                "\tHop: {} - {}kg/l",
+                hop.name,
+                hop.amount / recipe.batch_size
+            );
+            hop.amount / recipe.batch_size
+        })
+        .fold(0. / 0., f32::max)
+}
+
+fn read_file_to_string<P: AsRef<path::Path>>(file_name: P) -> std::io::Result<String> {
     let mut file = fs::File::open(file_name)?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
     Ok(contents)
 }
 
-pub fn list_recipes(recipe_dir: &str) -> Vec<fs::DirEntry> {
+fn list_recipes(recipe_dir: &str) -> Vec<path::PathBuf> {
     let device_path = path::Path::new(recipe_dir);
     if !device_path.exists() {
         panic!("No such dir: {}", recipe_dir);
@@ -38,5 +55,8 @@ pub fn list_recipes(recipe_dir: &str) -> Vec<fs::DirEntry> {
             panic!("Unable to list DSB files {}.", recipe_dir);
         }
     };
-    files.filter_map(Result::ok).collect()
+    files
+        .filter_map(Result::ok)
+        .map(|file| file.path())
+        .collect()
 }
