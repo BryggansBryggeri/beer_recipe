@@ -14,7 +14,7 @@ pub struct Hop {
     alpha: Percent,
     pub amount: f32,
     #[serde(rename = "USE")]
-    use_: Use,
+    pub use_: Use,
     /// The time as measured in minutes.
     time: Time,
     notes: Option<String>,
@@ -37,7 +37,7 @@ pub struct Hop {
 impl RecordSet for Hop {}
 
 #[derive(Debug, PartialEq, Clone)]
-enum Use {
+pub enum Use {
     Boil,
     DryHop,
     Mash,

@@ -1,3 +1,4 @@
+use beer_recipe::beerxml::hop;
 use beer_recipe::beerxml::recipe::Recipe;
 use std::f32;
 use std::fs;
@@ -25,6 +26,7 @@ fn main() {
 fn max_hop_amount_in_recipe(recipe: &Recipe) -> f32 {
     let hops = recipe.hops();
     hops.iter()
+        .filter(|hop| hop.use_ == hop::Use::Boil)
         .map(|hop| {
             println!(
                 "\tHop: {} - {}kg/l",
