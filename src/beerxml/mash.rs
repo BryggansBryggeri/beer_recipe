@@ -12,28 +12,28 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct Mash {
-    name: String,
-    version: u8,
+    pub name: String,
+    pub version: u8,
     ///The temperature of the grain before adding it to the mash.
-    grain_temp: f32,
+    pub grain_temp: f32,
     #[serde(bound(deserialize = "Vec<MashStep>: Deserialize<'de>"))]
-    mash_steps: MashSteps,
-    notes: Option<String>,
+    pub mash_steps: MashSteps,
+    pub notes: Option<String>,
     ///Grain tun temperature - may be used to adjust the infusion temperature for equipment.
-    tun_temp: Option<Temperature>,
+    pub tun_temp: Option<Temperature>,
     ///Temperature of the sparge water
-    sparge_temp: Option<Temperature>,
-    ph: Option<f32>,
-    tun_weight: Option<f32>,
+    pub sparge_temp: Option<Temperature>,
+    pub ph: Option<f32>,
+    pub tun_weight: Option<f32>,
     ///Cal/(gram deg C)
-    tun_specific_heat: Option<f32>,
+    pub tun_specific_heat: Option<f32>,
     ///If `true`, mash infusion and decoction calculations should take into account the temperature effects of the equipment
     ///(tun specific heat and tun weight).
     ///If `false`, the tun is assumed to be pre-heated.
     ///Default is `false`.
     #[serde(default)]
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
-    equip_adjust: Option<bool>,
+    pub equip_adjust: Option<bool>,
 }
 
 /// Wrapper type for MashStep vectors
@@ -53,10 +53,11 @@ pub struct Mash {
 ///     </MASH_STEP>
 ///</MASH_STEPS>
 /// ```
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Default)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct MashSteps {
-    mash_step: Vec<MashStep>,
+    #[serde(default = "Vec::new")]
+    pub mash_step: Vec<MashStep>,
 }
 
 /// A mash step is an internal record used within a mash profile to denote a separate step in a multi-step mash.
@@ -65,19 +66,19 @@ pub struct MashSteps {
 #[serde(rename_all = "UPPERCASE")]
 #[serde(rename = "MASH_STEP")]
 pub struct MashStep {
-    name: String,
-    version: u8,
+    pub name: String,
+    pub version: u8,
     #[serde(rename = "TYPE")]
-    type_: Type,
-    infuse_amount: Option<Volume>,
-    step_temp: Temperature,
-    step_time: Time,
-    ramp_time: Option<Time>,
-    end_temp: Option<Temperature>,
+    pub type_: Type,
+    pub infuse_amount: Option<Volume>,
+    pub step_temp: Temperature,
+    pub step_time: Time,
+    pub ramp_time: Option<Time>,
+    pub end_temp: Option<Temperature>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
-enum Type {
+pub enum Type {
     Infusion,
     Temperature,
     Decoction,
@@ -192,41 +193,5 @@ mod beerxml_mash_step {
             end_temp: None,
         };
         assert_eq!(parsed_mash_step, true_mash_step);
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use serde_json;
-    #[test]
-    fn test_json_output() {
-        let xml_input = r"
-            <MASH>
-                <NAME>Single Step Infusion, 68 C</NAME>
-                <VERSION>1</VERSION>
-                <GRAIN_TEMP>22.0</GRAIN_TEMP>
-                <MASH_STEPS>
-                    <MASH_STEP>
-                        <NAME>Conversion Step 1</NAME>
-                        <VERSION>1</VERSION>
-                        <TYPE>Infusion</TYPE>
-                        <STEP_TEMP>68.0</STEP_TEMP>
-                        <STEP_TIME>60.0</STEP_TIME>
-                        <INFUSE_AMOUNT>10.0</INFUSE_AMOUNT>
-                    </MASH_STEP>
-                    <MASH_STEP>
-                        <NAME>Conversion Step 2</NAME>
-                        <VERSION>1</VERSION>
-                        <TYPE>Temperature</TYPE>
-                        <STEP_TEMP>70.0</STEP_TEMP>
-                        <STEP_TIME>10.0</STEP_TIME>
-                    </MASH_STEP>
-                </MASH_STEPS>
-            </MASH>
-            ";
-        let parsed_style: Mash = serde_xml_rs::from_str(xml_input).unwrap();
-        let json_string = serde_json::json!(parsed_style);
-        println!("{}", serde_json::to_string_pretty(&json_string).unwrap());
     }
 }

@@ -6,7 +6,7 @@ use serde::Deserializer;
 
 use crate::RecordSet;
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct Hop {
     name: String,
@@ -36,13 +36,20 @@ pub struct Hop {
 
 impl RecordSet for Hop {}
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 enum Use {
     Boil,
     DryHop,
     Mash,
     FirstWort,
     Aroma,
+}
+
+#[derive(Deserialize, Debug, PartialEq, Default, Clone)]
+#[serde(rename_all = "UPPERCASE")]
+pub struct Hops {
+    #[serde(default = "Vec::new")]
+    pub hop: Vec<Hop>,
 }
 
 impl<'de> Deserialize<'de> for Use {
@@ -62,14 +69,14 @@ impl<'de> Deserialize<'de> for Use {
     }
 }
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 enum Type {
     Bittering,
     Aroma,
     Both,
 }
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 enum Form {
     Pellet,
     Plug,
