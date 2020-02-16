@@ -5,7 +5,7 @@ use crate::units::*;
 use crate::utils;
 use crate::RecordSet;
 use serde;
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Deserializer};
 
 #[derive(Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]

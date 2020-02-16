@@ -1,5 +1,5 @@
-use beer_recipe::beerxml::hop;
-use beer_recipe::beerxml::recipe::Recipe;
+use beer_recipe::beerxml;
+use beer_recipe::bryggio;
 use std::f32;
 use std::fs;
 use std::io::prelude::*;
@@ -12,21 +12,20 @@ fn main() {
         .iter()
         .map(|file| read_file_to_string(file))
         .filter_map(Result::ok)
-        .map(|raw| serde_xml_rs::from_str::<Recipe>(&raw))
+        .map(|raw| serde_xml_rs::from_str::<beerxml::Recipe>(&raw))
         .filter_map(Result::ok);
     let max_hop = recipes
         .map(|recipe| {
             println!("\nRecipe: {}\n---------------", recipe.name);
-            max_hop_amount_in_recipe(&recipe)
+            max_hop_amount_in_recipe(&recipe.into())
         })
         .fold(0. / 0., f32::max);
     println!("\n\nLargest single hop amount found: {}kg/l", max_hop);
 }
 
-fn max_hop_amount_in_recipe(recipe: &Recipe) -> f32 {
+fn max_hop_amount_in_recipe(recipe: &bryggio::Recipe) -> f32 {
     let hops = recipe.hops();
-    hops.iter()
-        .filter(|hop| hop.use_ == hop::Use::Boil)
+    hops.filter(|hop| hop.use_ == beerxml::hop::Use::Boil)
         .map(|hop| {
             println!(
                 "\tHop: {} - {}kg/l",
@@ -59,6 +58,13 @@ fn list_recipes(recipe_dir: &str) -> Vec<path::PathBuf> {
     };
     files
         .filter_map(Result::ok)
+        .map(|file| {
+            println!(
+                "{}",
+                file.path().as_path().file_name().unwrap().to_str().unwrap()
+            );
+            file
+        })
         .map(|file| file.path())
         .collect()
 }

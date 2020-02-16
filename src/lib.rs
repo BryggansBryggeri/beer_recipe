@@ -11,8 +11,9 @@ use serde;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 pub mod beerxml;
-pub mod units;
-pub mod utils;
+pub mod bryggio;
+mod units;
+mod utils;
 
 pub trait RecordSet {}
 

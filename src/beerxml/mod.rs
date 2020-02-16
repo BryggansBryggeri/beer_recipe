@@ -7,3 +7,13 @@ pub mod recipe;
 pub mod style;
 pub mod water;
 pub mod yeast;
+
+pub(crate) use equipment::Equipment;
+pub(crate) use fermentable::Fermentable;
+pub(crate) use hop::Hop;
+pub(crate) use misc::Misc;
+pub use recipe::Recipe;
+pub(crate) use recipe::Type;
+pub(crate) use style::Style;
+pub(crate) use water::Water;
+pub(crate) use yeast::Yeast;

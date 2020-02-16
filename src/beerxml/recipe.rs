@@ -1,6 +1,6 @@
 use crate::beerxml::equipment::Equipment;
 use crate::beerxml::fermentable::Fermentables;
-use crate::beerxml::hop::{Hop, Hops};
+use crate::beerxml::hop::Hops;
 use crate::beerxml::mash::Mash;
 use crate::beerxml::misc::Miscs;
 use crate::beerxml::style::Style;
@@ -15,57 +15,51 @@ use serde::{Deserialize, Deserializer};
 #[serde(rename_all = "UPPERCASE")]
 pub struct Recipe {
     pub name: String,
-    version: u8,
+    pub version: u8,
     #[serde(rename = "TYPE")]
-    type_: Type,
-    style: Style,
-    equipment: Option<Equipment>,
-    brewer: String,
-    asst_brewer: Option<String>,
+    pub(crate) type_: Type,
+    pub(crate) style: Style,
+    pub(crate) equipment: Option<Equipment>,
+    pub(crate) brewer: String,
+    pub(crate) asst_brewer: Option<String>,
     pub batch_size: f32,
-    boil_size: Liters,
-    boil_time: Minutes,
+    pub(crate) boil_size: Liters,
+    pub(crate) boil_time: Minutes,
     /// Not used for `Type::Extract`
-    efficiency: f32,
-    hops: Hops,
-    fermentables: Fermentables,
-    miscs: Miscs,
-    yeasts: Yeasts,
-    waters: Waters,
-    mash: Mash,
-    notes: Option<String>,
-    taste_notes: Option<String>,
-    taste_rating: Option<f32>,
-    og: Option<SpecificGravity>,
-    fg: Option<SpecificGravity>,
-    fermentation_stages: Option<u8>,
-    primary_age: Option<Days>,
-    primary_temp: Option<Celsius>,
-    secondary_age: Option<Days>,
-    secondary_temp: Option<Celsius>,
-    tertiary_age: Option<Days>,
-    tertiary_temp: Option<Celsius>,
-    age: Option<Days>,
-    age_temp: Option<Celsius>,
-    date: Option<String>,
-    carbonation: Option<VolumesCO2>,
+    pub(crate) efficiency: f32,
+    pub(crate) hops: Hops,
+    pub(crate) fermentables: Fermentables,
+    pub(crate) miscs: Miscs,
+    pub(crate) yeasts: Yeasts,
+    pub(crate) waters: Waters,
+    pub(crate) mash: Mash,
+    pub(crate) notes: Option<String>,
+    pub(crate) taste_notes: Option<String>,
+    pub(crate) taste_rating: Option<f32>,
+    pub(crate) og: Option<SpecificGravity>,
+    pub(crate) fg: Option<SpecificGravity>,
+    pub(crate) fermentation_stages: Option<u8>,
+    pub(crate) primary_age: Option<Days>,
+    pub(crate) primary_temp: Option<Celsius>,
+    pub(crate) secondary_age: Option<Days>,
+    pub(crate) secondary_temp: Option<Celsius>,
+    pub(crate) tertiary_age: Option<Days>,
+    pub(crate) tertiary_temp: Option<Celsius>,
+    pub(crate) age: Option<Days>,
+    pub(crate) age_temp: Option<Celsius>,
+    pub(crate) date: Option<String>,
+    pub(crate) carbonation: Option<VolumesCO2>,
     #[serde(default)]
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
-    forced_carbonation: Option<bool>,
-    priming_sugar_name: Option<String>,
-    carbonation_temp: Option<Celsius>,
-    priming_sugar_equiv: Option<f32>,
-    keg_priming_factor: Option<f32>,
-}
-
-impl Recipe {
-    pub fn hops(&self) -> Vec<Hop> {
-        self.hops.hop.clone()
-    }
+    pub(crate) forced_carbonation: Option<bool>,
+    pub(crate) priming_sugar_name: Option<String>,
+    pub(crate) carbonation_temp: Option<Celsius>,
+    pub(crate) priming_sugar_equiv: Option<f32>,
+    pub(crate) keg_priming_factor: Option<f32>,
 }
 
 #[derive(Debug, PartialEq)]
-enum Type {
+pub(crate) enum Type {
     Extract,
     PartialMash,
     AllGrain,
