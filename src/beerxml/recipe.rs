@@ -6,6 +6,7 @@ use crate::beerxml::misc::Miscs;
 use crate::beerxml::style::Style;
 use crate::beerxml::water::Waters;
 use crate::beerxml::yeast::Yeasts;
+use crate::units::*;
 use crate::utils;
 use serde;
 use serde::{Deserialize, Deserializer};
@@ -22,8 +23,8 @@ pub struct Recipe {
     brewer: String,
     asst_brewer: Option<String>,
     pub batch_size: f32,
-    boil_size: f32,
-    boil_time: f32,
+    boil_size: Liters,
+    boil_time: Minutes,
     /// Not used for `Type::Extract`
     efficiency: f32,
     hops: Hops,
@@ -35,24 +36,24 @@ pub struct Recipe {
     notes: Option<String>,
     taste_notes: Option<String>,
     taste_rating: Option<f32>,
-    og: Option<f32>,
-    fg: Option<f32>,
+    og: Option<SpecificGravity>,
+    fg: Option<SpecificGravity>,
     fermentation_stages: Option<u8>,
-    primary_age: Option<f32>,
-    primary_temp: Option<f32>,
-    secondary_age: Option<f32>,
-    secondary_temp: Option<f32>,
-    tertiary_age: Option<f32>,
-    tertiary_temp: Option<f32>,
-    age: Option<f32>,
-    age_temp: Option<f32>,
+    primary_age: Option<Days>,
+    primary_temp: Option<Celsius>,
+    secondary_age: Option<Days>,
+    secondary_temp: Option<Celsius>,
+    tertiary_age: Option<Days>,
+    tertiary_temp: Option<Celsius>,
+    age: Option<Days>,
+    age_temp: Option<Celsius>,
     date: Option<String>,
-    carbonation: Option<f32>,
+    carbonation: Option<VolumesCO2>,
     #[serde(default)]
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     forced_carbonation: Option<bool>,
     priming_sugar_name: Option<String>,
-    carbonation_temp: Option<f32>,
+    carbonation_temp: Option<Celsius>,
     priming_sugar_equiv: Option<f32>,
     keg_priming_factor: Option<f32>,
 }

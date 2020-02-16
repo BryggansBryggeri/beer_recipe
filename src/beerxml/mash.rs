@@ -15,16 +15,16 @@ pub struct Mash {
     pub name: String,
     pub version: u8,
     ///The temperature of the grain before adding it to the mash.
-    pub grain_temp: f32,
+    pub grain_temp: Celsius,
     #[serde(bound(deserialize = "Vec<MashStep>: Deserialize<'de>"))]
     pub mash_steps: MashSteps,
     pub notes: Option<String>,
     ///Grain tun temperature - may be used to adjust the infusion temperature for equipment.
-    pub tun_temp: Option<Temperature>,
+    pub tun_temp: Option<Celsius>,
     ///Temperature of the sparge water
-    pub sparge_temp: Option<Temperature>,
-    pub ph: Option<f32>,
-    pub tun_weight: Option<f32>,
+    pub sparge_temp: Option<Celsius>,
+    pub ph: Option<PH>,
+    pub tun_weight: Option<Kilograms>,
     ///Cal/(gram deg C)
     pub tun_specific_heat: Option<f32>,
     ///If `true`, mash infusion and decoction calculations should take into account the temperature effects of the equipment
@@ -70,11 +70,11 @@ pub struct MashStep {
     pub version: u8,
     #[serde(rename = "TYPE")]
     pub type_: Type,
-    pub infuse_amount: Option<Volume>,
-    pub step_temp: Temperature,
-    pub step_time: Time,
-    pub ramp_time: Option<Time>,
-    pub end_temp: Option<Temperature>,
+    pub infuse_amount: Option<Liters>,
+    pub step_temp: Celsius,
+    pub step_time: Minutes,
+    pub ramp_time: Option<Minutes>,
+    pub end_temp: Option<Celsius>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]

@@ -12,11 +12,11 @@ pub struct Hop {
     pub name: String,
     version: u8,
     alpha: Percent,
-    pub amount: f32,
+    pub amount: Kilograms,
     #[serde(rename = "USE")]
     pub use_: Use,
     /// The time as measured in minutes.
-    time: Time,
+    time: Minutes,
     notes: Option<String>,
     #[serde(rename = "TYPE")]
     type_: Option<Type>,

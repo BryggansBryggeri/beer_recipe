@@ -1,6 +1,7 @@
 //! # Equipment
 //!
-//! Though an equipment record is optional, when used it in a recipe or on its own it provides details needed to calculate total water usage as well as water needed for each step.
+//! Though an equipment record is optional, when used it in a recipe or on its own it provides details needed to
+//! calculate total water usage as well as water needed for each step.
 //! It also contains information about the thermal parameters of the mash tun and large batch hop utilization factors.
 use crate::units::*;
 use crate::utils;
@@ -18,7 +19,7 @@ pub struct Equipment {
     ///The target volume of the batch at the start of fermentation.
     batch_size: f32,
     ///Volume of the mash tun in liters.
-    tun_volume: Option<Volume>,
+    tun_volume: Option<Liters>,
     ///Weight of the mash tun in kilograms.
     ///Used primarily to calculate the thermal parameters of
     ///the mash tun – in conjunction with the volume and specific heat.
@@ -26,13 +27,13 @@ pub struct Equipment {
     ///Cal/(gram deg C)
     tun_specific_heat: Option<f32>,
     ///The amount of top up water normally added just prior to starting fermentation.
-    top_up_water: Option<Volume>,
+    top_up_water: Option<Liters>,
     ///The amount of wort normally lost during transition from the boiler to the fermentation vessel.
     ///Includes both unusable wort due to trub and wort lost to the chiller and transfer systems.
-    trub_chiller_loss: Option<Volume>,
+    trub_chiller_loss: Option<Liters>,
     ///The percentage of wort lost to evaporation per hour
     evap_rate: Option<f32>,
-    boil_time: Option<Time>,
+    boil_time: Option<Minutes>,
     ///If `true`, then
     ///`boil_size = (batch_size - top_up_water - trub_chiller_loss) * (1 + boil_time * evap_rate
     ///)`.
@@ -41,9 +42,9 @@ pub struct Equipment {
     #[serde(deserialize_with = "utils::opt_bool_de_from_str")]
     calc_boil_volume: Option<bool>,
     ///Amount lost to the lauter tun and equipment associated with the lautering process.
-    lauter_deadspace: Option<Volume>,
+    lauter_deadspace: Option<Liters>,
     ///Amount normally added to the boil kettle before the boil.
-    top_up_kettle: Option<Volume>,
+    top_up_kettle: Option<Liters>,
     hop_utilization: Option<Percent>,
     notes: Option<String>,
 }

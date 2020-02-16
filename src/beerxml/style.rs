@@ -30,18 +30,18 @@ pub struct Style {
     pub fg_max: SpecificGravity,
     ///The recommended minimum bitterness for this style as measured in
     ///International Bitterness Units (IBUs)
-    pub ibu_min: IBU,
+    pub ibu_min: Ibu,
     ///The recommended maximum bitterness for this style as measured in
     ///International Bitterness Units (IBUs)
-    pub ibu_max: IBU,
+    pub ibu_max: Ibu,
     pub color_min: SRMColor,
     pub color_max: SRMColor,
     ///Minimum recommended carbonation for this style in volumes of CO2
     pub carb_min: Option<VolumesCO2>,
     ///Maximum recommended carbonation for this style in volumes of CO2
     pub carb_max: Option<VolumesCO2>,
-    pub abv_min: Option<ABV>,
-    pub abv_max: Option<ABV>,
+    pub abv_min: Option<Abv>,
+    pub abv_max: Option<Abv>,
     pub notes: Option<String>,
     pub profile: Option<String>,
     pub ingredients: Option<String>,

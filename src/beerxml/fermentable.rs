@@ -15,7 +15,7 @@ pub struct Fermentable {
     #[serde(rename = "TYPE")]
     type_: Type,
     ///Weight in kilograms.
-    amount: f32,
+    amount: Kilograms,
     #[serde(rename = "YIELD")]
     yield_: Percent,
     ///The color of the item in Lovibond Units (SRM for liquid extracts).
