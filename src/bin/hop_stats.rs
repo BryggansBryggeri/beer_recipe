@@ -6,30 +6,28 @@ use std::io::prelude::*;
 use std::path;
 
 fn main() {
-    let recipe_files = list_recipes("src/bin/current");
+    let recipe_files = list_recipes("src/bin/recipes");
 
     let recipes = recipe_files
         .iter()
-        .map(|file| read_file_to_string(file))
-        .filter_map(Result::ok)
-        .map(|raw| serde_xml_rs::from_str::<beerxml::Recipe>(&raw))
-        .filter_map(Result::ok);
+        .flat_map(read_file_to_string)
+        .flat_map(|raw| serde_xml_rs::from_str::<beerxml::Recipe>(&raw));
     let max_hop = recipes
         .map(|recipe| {
-            println!("\nRecipe: {}\n---------------", recipe.name);
+            println!("\nRecipe: {}\n---------------", &recipe.name);
             max_hop_amount_in_recipe(&recipe.into())
         })
         .fold(0. / 0., f32::max);
-    println!("\n\nLargest single hop amount found: {}kg/l", max_hop);
+    println!("\n\nLargest single hop amount found: {}kg/l", &max_hop);
 }
 
 fn max_hop_amount_in_recipe(recipe: &bryggio::Recipe) -> f32 {
     let hops = recipe.hops();
-    hops.filter(|hop| hop.use_ == beerxml::hop::Use::Boil)
+    hops.filter(|hop| hop.use_ != beerxml::hop::Use::DryHop)
         .map(|hop| {
             println!(
                 "\tHop: {} - {}kg/l",
-                hop.name,
+                &hop.name,
                 hop.amount / recipe.batch_size
             );
             hop.amount / recipe.batch_size
