@@ -3,6 +3,7 @@ use crate::bryggio;
 use crate::bryggio::process;
 use crate::units::*;
 use crate::utils;
+use brew_calculator;
 use serde;
 use serde::Deserialize;
 use std::convert::From;
@@ -62,7 +63,9 @@ impl From<beerxml::Recipe> for Recipe {
             miscs: beerxml_recipe.miscs.misc,
             yeasts: beerxml_recipe.yeasts.yeast,
             waters: beerxml_recipe.waters.water,
-            boil: process::Boil {},
+            boil: process::Boil {
+                volume: beerxml_recipe.boil_size,
+            },
             mash: process::Mash {},
             fermentation: process::Fermentation {},
             notes: beerxml_recipe.notes,
@@ -82,5 +85,22 @@ impl From<beerxml::Recipe> for Recipe {
 impl Recipe {
     pub fn hops(&self) -> std::slice::Iter<beerxml::Hop> {
         self.hops.iter()
+    }
+
+    pub fn ibu(&self) -> Ibu {
+        // TODO: This should be calculated
+        let tmp_gravity = 1.05;
+
+        self.hops()
+            .filter(|hop| hop.bittering())
+            .fold(0.0, |acc, hop| {
+                acc + brew_calculator::ibu::ibu(
+                    hop.amount,
+                    hop.alpha,
+                    self.boil.volume,
+                    hop.time,
+                    tmp_gravity,
+                )
+            })
     }
 }

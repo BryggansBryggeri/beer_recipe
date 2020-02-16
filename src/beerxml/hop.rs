@@ -11,12 +11,12 @@ use crate::RecordSet;
 pub struct Hop {
     pub name: String,
     version: u8,
-    alpha: Percent,
+    pub alpha: Percent,
     pub amount: Kilograms,
     #[serde(rename = "USE")]
     pub use_: Use,
     /// The time as measured in minutes.
-    time: Minutes,
+    pub time: Minutes,
     notes: Option<String>,
     #[serde(rename = "TYPE")]
     type_: Option<Type>,
@@ -32,6 +32,12 @@ pub struct Hop {
     caryophyllene: Option<Percent>,
     cohumulone: Option<Percent>,
     myrcene: Option<Percent>,
+}
+
+impl Hop {
+    pub fn bittering(&self) -> bool {
+        self.use_ != Use::Aroma && self.use_ != Use::DryHop
+    }
 }
 
 impl RecordSet for Hop {}
