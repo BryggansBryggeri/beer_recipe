@@ -1,4 +1,5 @@
 use crate::beerxml;
+use crate::bryggio;
 use crate::bryggio::process;
 use crate::units::*;
 use crate::utils;
@@ -11,21 +12,21 @@ use std::convert::From;
 pub struct Recipe {
     pub name: String,
     #[serde(rename = "TYPE")]
-    type_: beerxml::Type,
-    style: beerxml::Style,
+    type_: bryggio::Type,
+    style: bryggio::Style,
     brewer: String,
     asst_brewer: Option<String>,
-    equipment: Option<beerxml::Equipment>,
+    equipment: Option<bryggio::Equipment>,
     pub batch_size: Liters,
     og: Option<f32>,
     fg: Option<f32>,
     /// Not used for `Type::Extract`
     efficiency: f32,
-    hops: Vec<beerxml::Hop>,
-    fermentables: Vec<beerxml::Fermentable>,
-    miscs: Vec<beerxml::Misc>,
-    yeasts: Vec<beerxml::Yeast>,
-    waters: Vec<beerxml::Water>,
+    hops: Vec<bryggio::Hop>,
+    fermentables: Vec<bryggio::Fermentable>,
+    miscs: Vec<bryggio::Misc>,
+    yeasts: Vec<bryggio::Yeast>,
+    waters: Vec<bryggio::Water>,
     boil: process::Boil,
     mash: process::Mash,
     fermentation: process::Fermentation,
