@@ -19,8 +19,9 @@ pub struct Recipe {
     asst_brewer: Option<String>,
     equipment: Option<bryggio::Equipment>,
     pub batch_size: Liters,
-    og: Option<f32>,
-    fg: Option<f32>,
+    pre_boil_gravity: Option<SpecificGravity>,
+    og: Option<SpecificGravity>,
+    fg: Option<SpecificGravity>,
     /// Not used for `Type::Extract`
     efficiency: f32,
     hops: Vec<bryggio::Hop>,
@@ -48,6 +49,9 @@ impl From<beerxml::Recipe> for Recipe {
             asst_brewer: beerxml_recipe.asst_brewer,
             equipment: beerxml_recipe.equipment,
             batch_size: beerxml_recipe.batch_size,
+            // Both gravity measures should be inferred
+            // from grain bill, efficiency et al.
+            pre_boil_gravity: None,
             og: beerxml_recipe.og,
             fg: beerxml_recipe.fg,
             efficiency: beerxml_recipe.efficiency,
@@ -57,9 +61,10 @@ impl From<beerxml::Recipe> for Recipe {
             yeasts: beerxml_recipe.yeasts.yeast,
             waters: beerxml_recipe.waters.water,
             mash: process::Mash {},
-            boil: process::Boil {
-                volume: beerxml_recipe.boil_size,
-            },
+            boil: process::Boil::from_beerxml_recipe(
+                beerxml_recipe.boil_size,
+                beerxml_recipe.boil_time,
+            ),
             fermentation: process::Fermentation {},
             carbonation: process::Carbonation {},
             notes: beerxml_recipe.notes,
@@ -91,20 +96,74 @@ impl Recipe {
         self.miscs.iter()
     }
 
+    /// Total IBU for recipe
+    ///
+    /// Calculates and sums the individual IBU contributions for all bittering hops.
     pub fn ibu(&self) -> Ibu {
-        // TODO: This should be calculated
-        let tmp_gravity = 1.05;
-
         self.hops()
             .filter(|hop| hop.bittering())
             .fold(0.0, |acc, hop| {
                 acc + brew_calculator::ibu::ibu(
                     hop.amount,
                     hop.alpha,
-                    self.boil.volume,
+                    self.average_boil_volume(hop.time),
                     hop.time,
-                    tmp_gravity,
+                    self.average_specific_gravity(hop.time),
                 )
             })
+    }
+
+    /// Average boil volume
+    ///
+    /// Linearly interpolated average of boil volume on the interval $[T - t, T]$
+    ///
+    /// - $t$ [min]: `time`
+    /// - $T$ [min]: End of boil
+    fn average_boil_volume(&self, time: Minutes) -> Liters {
+        let start_volume = brew_calculator::utils::linear_interpolation(
+            self.boil.boil_time - time,
+            0.0,
+            self.boil.boil_time,
+            self.boil.pre_volume,
+            self.batch_size,
+        );
+        (start_volume + self.batch_size) / 2.0
+    }
+
+    /// Average gravity
+    ///
+    /// Linearly interpolated average of specific gravity on the interval $[T - t, T]$
+    ///
+    /// - $t$ [min]: `time`
+    /// - $T$ [min]: End of boil
+    fn average_specific_gravity(&self, time: Minutes) -> Liters {
+        let og = if let Some(og) = self.og {
+            og
+        } else {
+            self.estimated_og()
+        };
+
+        let pre_boil_gravity = if let Some(pre_g) = self.pre_boil_gravity {
+            pre_g
+        } else {
+            self.estimated_pre_boil_gravity()
+        };
+
+        let start_gravity = brew_calculator::utils::linear_interpolation(
+            self.boil.boil_time - time,
+            0.0,
+            self.boil.boil_time,
+            pre_boil_gravity,
+            og,
+        );
+        (start_gravity + og) / 2.0
+    }
+
+    pub fn estimated_pre_boil_gravity(&self) -> SpecificGravity {
+        todo!("Calculate pre-boil gravity from recipe");
+    }
+
+    pub fn estimated_og(&self) -> SpecificGravity {
+        todo!("Calculate OG from recipe");
     }
 }
