@@ -25,9 +25,9 @@ pub struct Recipe {
     efficiency: f32,
     hops: Vec<bryggio::Hop>,
     fermentables: Vec<bryggio::Fermentable>,
-    miscs: Vec<bryggio::Misc>,
     yeasts: Vec<bryggio::Yeast>,
     waters: Vec<bryggio::Water>,
+    miscs: Vec<bryggio::Misc>,
     boil: process::Boil,
     mash: process::Mash,
     fermentation: process::Fermentation,
@@ -83,8 +83,24 @@ impl From<beerxml::Recipe> for Recipe {
 }
 
 impl Recipe {
-    pub fn hops(&self) -> std::slice::Iter<beerxml::Hop> {
+    pub fn hops(&self) -> std::slice::Iter<bryggio::Hop> {
         self.hops.iter()
+    }
+
+    pub fn fermentables(&self) -> std::slice::Iter<bryggio::Fermentable> {
+        self.fermentables.iter()
+    }
+
+    pub fn yeasts(&self) -> std::slice::Iter<bryggio::Yeast> {
+        self.yeasts.iter()
+    }
+
+    pub fn waters(&self) -> std::slice::Iter<bryggio::Water> {
+        self.waters.iter()
+    }
+
+    pub fn miscs(&self) -> std::slice::Iter<bryggio::Misc> {
+        self.miscs.iter()
     }
 
     pub fn ibu(&self) -> Ibu {
