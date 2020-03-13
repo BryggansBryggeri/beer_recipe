@@ -42,7 +42,7 @@ impl Hop {
 
 impl RecordSet for Hop {}
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Copy, Debug, PartialEq, Clone)]
 pub enum Use {
     Boil,
     DryHop,

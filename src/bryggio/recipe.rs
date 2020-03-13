@@ -2,7 +2,6 @@ use crate::beerxml;
 use crate::bryggio;
 use crate::bryggio::process;
 use crate::units::*;
-use crate::utils;
 use brew_calculator;
 use serde;
 use serde::Deserialize;

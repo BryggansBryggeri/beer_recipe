@@ -77,7 +77,7 @@ pub struct MashStep {
     pub end_temp: Option<Celsius>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq)]
 pub enum Type {
     Infusion,
     Temperature,

@@ -50,7 +50,7 @@ pub struct Style {
 
 impl RecordSet for Style {}
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Copy, Clone, Debug, PartialEq)]
 pub enum Type {
     Lager,
     Ale,
