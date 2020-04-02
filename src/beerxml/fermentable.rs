@@ -3,7 +3,6 @@
 //!The term "fermentable" encompasses all fermentable items that contribute substantially to the beer including extracts, grains, sugars, honey, fruits.
 use crate::units::*;
 use crate::utils;
-use crate::RecordSet;
 use serde;
 use serde::{Deserialize, Deserializer};
 
@@ -43,8 +42,6 @@ pub struct Fermentable {
     recommend_mash: Option<bool>,
     ibu_gal_per_lb: Option<f32>,
 }
-
-impl RecordSet for Fermentable {}
 
 #[derive(Deserialize, Debug, PartialEq, Default)]
 #[serde(rename_all = "UPPERCASE")]

@@ -4,8 +4,6 @@ use serde;
 use serde::Deserialize;
 use serde::Deserializer;
 
-use crate::RecordSet;
-
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "UPPERCASE")]
 pub struct Hop {
@@ -39,8 +37,6 @@ impl Hop {
         self.use_ != Use::Aroma && self.use_ != Use::DryHop
     }
 }
-
-impl RecordSet for Hop {}
 
 #[derive(Copy, Debug, PartialEq, Clone)]
 pub enum Use {

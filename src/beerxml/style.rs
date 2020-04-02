@@ -7,7 +7,6 @@ use serde;
 use serde::{Deserialize, Serialize};
 
 use crate::units::*;
-use crate::RecordSet;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
@@ -47,8 +46,6 @@ pub struct Style {
     pub ingredients: Option<String>,
     pub examples: Option<String>,
 }
-
-impl RecordSet for Style {}
 
 #[derive(Serialize, Deserialize, Copy, Clone, Debug, PartialEq)]
 pub enum Type {

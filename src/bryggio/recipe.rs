@@ -2,7 +2,7 @@ use crate::beerxml;
 use crate::bryggio;
 use crate::bryggio::process;
 use crate::units::*;
-use brew_calculator;
+use brew_calculator::{ibu, utils};
 use serde;
 use serde::Deserialize;
 use std::convert::From;
@@ -36,6 +36,7 @@ pub struct Recipe {
     taste_notes: Option<String>,
     taste_rating: Option<f32>,
     pub(crate) date: Option<String>,
+    ibu_method: ibu::Method,
 }
 
 impl From<beerxml::Recipe> for Recipe {
@@ -70,6 +71,9 @@ impl From<beerxml::Recipe> for Recipe {
             taste_notes: beerxml_recipe.taste_notes,
             taste_rating: beerxml_recipe.og,
             date: beerxml_recipe.date,
+            ibu_method: beerxml_recipe
+                .ibu_method
+                .map_or(ibu::Method::Tinseth, |x| x.into()),
         }
     }
 }
@@ -102,7 +106,8 @@ impl Recipe {
         self.hops()
             .filter(|hop| hop.bittering())
             .fold(0.0, |acc, hop| {
-                acc + brew_calculator::ibu::ibu(
+                acc + ibu::ibu(
+                    self.ibu_method,
                     hop.amount,
                     hop.alpha,
                     self.average_boil_volume(hop.time),
@@ -119,7 +124,7 @@ impl Recipe {
     /// - $t$ [min]: `time`
     /// - $T$ [min]: End of boil
     fn average_boil_volume(&self, time: Minutes) -> Liters {
-        let start_volume = brew_calculator::utils::linear_interpolation(
+        let start_volume = utils::linear_interpolation(
             self.boil.boil_time - time,
             0.0,
             self.boil.boil_time,
@@ -148,7 +153,7 @@ impl Recipe {
             self.estimated_pre_boil_gravity()
         };
 
-        let start_gravity = brew_calculator::utils::linear_interpolation(
+        let start_gravity = utils::linear_interpolation(
             self.boil.boil_time - time,
             0.0,
             self.boil.boil_time,
@@ -164,5 +169,14 @@ impl Recipe {
 
     pub fn estimated_og(&self) -> SpecificGravity {
         todo!("Calculate OG from recipe");
+    }
+}
+
+impl From<bryggio::IbuMethod> for ibu::Method {
+    fn from(method: bryggio::IbuMethod) -> ibu::Method {
+        match method {
+            bryggio::IbuMethod::Tinseth => ibu::Method::Tinseth,
+            _ => todo!(),
+        }
     }
 }

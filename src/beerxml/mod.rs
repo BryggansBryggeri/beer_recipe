@@ -12,6 +12,7 @@ pub(crate) use equipment::Equipment;
 pub(crate) use fermentable::Fermentable;
 pub(crate) use hop::Hop;
 pub(crate) use misc::Misc;
+pub(crate) use recipe::IbuMethod;
 pub use recipe::Recipe;
 pub(crate) use recipe::Type;
 pub(crate) use style::Style;

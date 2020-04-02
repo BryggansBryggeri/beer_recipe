@@ -56,6 +56,8 @@ pub struct Recipe {
     pub(crate) carbonation_temp: Option<Celsius>,
     pub(crate) priming_sugar_equiv: Option<f32>,
     pub(crate) keg_priming_factor: Option<f32>,
+    #[serde(default, with = "ibu_method")]
+    pub(crate) ibu_method: Option<IbuMethod>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -76,6 +78,32 @@ impl<'de> Deserialize<'de> for Type {
             "Extract" => Ok(Type::Extract),
             "Partial Mash" => Ok(Type::PartialMash),
             "All Grain" => Ok(Type::AllGrain),
+            _ => Err(serde::de::Error::unknown_variant(&s, &["Unknown type"])),
+        }
+    }
+}
+
+/// IBU methods
+#[derive(Debug, PartialEq)]
+pub enum IbuMethod {
+    Tinseth,
+    Rager,
+    Garetz,
+}
+
+// TODO: This can be done with serde macro?
+mod ibu_method {
+    use super::IbuMethod;
+    use serde::{Deserialize, Deserializer};
+    pub(super) fn deserialize<'de, D>(deserializer: D) -> Result<Option<IbuMethod>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        match s.as_str() {
+            "Tinseth" => Ok(Some(IbuMethod::Tinseth)),
+            "Rager" => Ok(Some(IbuMethod::Rager)),
+            "Garetz" => Ok(Some(IbuMethod::Garetz)),
             _ => Err(serde::de::Error::unknown_variant(&s, &["Unknown type"])),
         }
     }
@@ -233,6 +261,7 @@ mod beerxml {
                 tun_specific_heat: None,
                 equip_adjust: None,
             },
+            ibu_method: None,
         };
         assert_eq!(parsed_recipe, true_recipe);
     }

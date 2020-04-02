@@ -2,6 +2,7 @@ use crate::beerxml;
 
 mod process;
 pub mod recipe;
+mod state_machine;
 pub use recipe::Recipe;
 
 /// Redefine BeerXML types as Bryggio types.
@@ -17,3 +18,4 @@ type Equipment = beerxml::Equipment;
 type Style = beerxml::Style;
 type Misc = beerxml::Misc;
 type Type = beerxml::Type;
+type IbuMethod = beerxml::IbuMethod;
