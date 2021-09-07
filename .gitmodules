@@ -1,0 +1,3 @@
+[submodule "brew_calculator"]
+	path = brew_calculator
+	url = git@github.com:BryggansBryggeri/brew_calculator.git
