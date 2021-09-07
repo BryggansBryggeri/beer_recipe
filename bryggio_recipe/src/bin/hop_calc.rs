@@ -12,7 +12,7 @@ fn main() {
     println!(
         "Total IBU for '{}': {}",
         recipe_file.file_stem().unwrap().to_str().unwrap(),
-        recipe.ibu()
+        recipe.ibu().unwrap()
     );
 }
 

@@ -36,7 +36,7 @@ pub struct Recipe {
     taste_notes: Option<String>,
     taste_rating: Option<f32>,
     pub(crate) date: Option<String>,
-    ibu_method: ibu::Method,
+    ibu_method: Option<ibu::Method>,
 }
 
 impl From<beerxml::Recipe> for Recipe {
@@ -71,9 +71,7 @@ impl From<beerxml::Recipe> for Recipe {
             taste_notes: beerxml_recipe.taste_notes,
             taste_rating: beerxml_recipe.og,
             date: beerxml_recipe.date,
-            ibu_method: beerxml_recipe
-                .ibu_method
-                .map_or(ibu::Method::Tinseth, |x| x.into()),
+            ibu_method: beerxml_recipe.ibu_method,
         }
     }
 }
@@ -102,27 +100,31 @@ impl Recipe {
     /// Total IBU for recipe
     ///
     /// Calculates and sums the individual IBU contributions for all bittering hops.
-    pub fn ibu(&self) -> Ibu {
-        self.hops()
+    pub fn ibu(&self) -> Result<Ibu, RecipeError> {
+        let ibu_method = self
+            .ibu_method
+            .ok_or(RecipeError::IbuCalcWithoutIbuMethod)?;
+        Ok(self
+            .hops()
             .filter(|hop| hop.bittering())
             .fold(0.0, |acc, hop| {
                 acc + ibu::ibu(
-                    self.ibu_method,
+                    ibu_method,
                     hop.amount,
                     hop.alpha,
                     self.average_boil_volume(hop.time),
                     hop.time,
                     self.average_specific_gravity(hop.time),
                 )
-            })
+            }))
     }
 
     /// Average boil volume
     ///
-    /// Linearly interpolated average of boil volume on the interval $[T - t, T]$
+    /// Linearly interpolated average of boil volume on the interval $\[T - t, T\]$
     ///
-    /// - $t$ [min]: `time`
-    /// - $T$ [min]: End of boil
+    /// - $t$ \[min\]: `time`
+    /// - $T$ \[min\]: End of boil
     fn average_boil_volume(&self, time: Minutes) -> Liters {
         let start_volume = utils::linear_interpolation(
             self.boil.boil_time - time,
@@ -136,10 +138,10 @@ impl Recipe {
 
     /// Average gravity
     ///
-    /// Linearly interpolated average of specific gravity on the interval $[T - t, T]$
+    /// Linearly interpolated average of specific gravity on the interval $\[T - t, T\]$
     ///
-    /// - $t$ [min]: `time`
-    /// - $T$ [min]: End of boil
+    /// - $t$ \[min\]: `time`
+    /// - $T$ \[min\]: End of boil
     fn average_specific_gravity(&self, time: Minutes) -> Liters {
         let og = if let Some(og) = self.og {
             og
@@ -170,4 +172,11 @@ impl Recipe {
     pub fn estimated_og(&self) -> SpecificGravity {
         todo!("Calculate OG from recipe");
     }
+}
+
+use thiserror::Error;
+#[derive(Copy, Clone, Debug, Error)]
+pub enum RecipeError {
+    #[error("Tried calculating IBU with IBU method 'None'")]
+    IbuCalcWithoutIbuMethod,
 }

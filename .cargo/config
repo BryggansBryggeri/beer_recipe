@@ -1,0 +1,6 @@
+[build]
+rustdocflags = [
+  "--html-in-header",
+  ".cargo/katex-header.html",
+  "--document-private-items",
+]
