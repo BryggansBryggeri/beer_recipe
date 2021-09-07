@@ -2,8 +2,7 @@
 //!
 //! The term "water" encompasses water profiles.
 //! Though not strictly required for recipes, the water record allows supporting programs to record the water profile used for brewing a particular batch.
-use crate::units::*;
-use serde;
+use brew_calculator::units::*;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug, PartialEq)]

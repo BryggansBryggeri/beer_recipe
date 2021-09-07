@@ -1,9 +1,8 @@
 //! # Yeast
 //!
 //! The term "yeast" encompasses all yeasts, including dry yeast, liquid yeast and yeast starters.
-use crate::units::*;
 use crate::utils;
-use serde;
+use brew_calculator::units::*;
 use serde::Deserialize;
 use serde::Deserializer;
 

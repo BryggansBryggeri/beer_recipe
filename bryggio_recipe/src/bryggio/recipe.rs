@@ -1,7 +1,7 @@
-use crate::beerxml;
 use crate::bryggio;
 use crate::bryggio::process;
-use crate::units::*;
+use beerxml;
+use brew_calculator::units::*;
 use brew_calculator::{ibu, utils};
 use serde;
 use serde::Deserialize;
@@ -169,14 +169,5 @@ impl Recipe {
 
     pub fn estimated_og(&self) -> SpecificGravity {
         todo!("Calculate OG from recipe");
-    }
-}
-
-impl From<bryggio::IbuMethod> for ibu::Method {
-    fn from(method: bryggio::IbuMethod) -> ibu::Method {
-        match method {
-            bryggio::IbuMethod::Tinseth => ibu::Method::Tinseth,
-            _ => todo!(),
-        }
     }
 }

@@ -1,6 +1,5 @@
 //! # Hop
-use crate::units::*;
-use serde;
+use brew_calculator::units::*;
 use serde::Deserialize;
 use serde::Deserializer;
 

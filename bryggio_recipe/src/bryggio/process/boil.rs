@@ -1,4 +1,4 @@
-use crate::units::*;
+use brew_calculator::units::*;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug, PartialEq)]

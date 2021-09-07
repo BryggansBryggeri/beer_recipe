@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
 
-use beer_recipe::beerxml::hop;
+use beerxml::hop;
 
 #[test]
 fn hops_file_read() {

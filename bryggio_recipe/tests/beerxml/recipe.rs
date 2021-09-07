@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
 
-use beer_recipe::beerxml::recipe::Recipe;
+use beerxml::recipe::Recipe;
 
 /// DISASTATIC_POWER -> DIASTATIC_POWER
 #[test]

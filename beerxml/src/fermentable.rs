@@ -1,9 +1,8 @@
 //!# Fermentable
 //!
 //!The term "fermentable" encompasses all fermentable items that contribute substantially to the beer including extracts, grains, sugars, honey, fruits.
-use crate::units::*;
 use crate::utils;
-use serde;
+use brew_calculator::units::*;
 use serde::{Deserialize, Deserializer};
 
 #[derive(Deserialize, Debug, PartialEq)]

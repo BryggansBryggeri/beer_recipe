@@ -3,10 +3,9 @@
 //! The term "style" encompasses beer styles.
 //! The beer style may be from the BJCP style guide, Australian, UK or local style guides.
 //! Generally a recipe is designed to one style.
-use serde;
 use serde::{Deserialize, Serialize};
 
-use crate::units::*;
+use brew_calculator::units::*;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]

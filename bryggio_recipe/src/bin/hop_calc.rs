@@ -1,4 +1,3 @@
-use beer_recipe::beerxml;
 use beer_recipe::bryggio;
 use std::fs;
 use std::io::prelude::*;

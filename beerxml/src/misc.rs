@@ -2,9 +2,8 @@
 //!
 //! The term "misc" encompasses all non-fermentable miscellaneous ingredients that are not hops or yeast and do not significantly change the gravity of the beer.
 //! For example: spices, clarifying agents, water treatments, etc…
-use crate::units::*;
 use crate::utils;
-use serde;
+use brew_calculator::units::*;
 use serde::Deserialize;
 use serde::Deserializer;
 
