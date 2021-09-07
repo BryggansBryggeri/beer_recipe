@@ -38,4 +38,5 @@
 #![cfg_attr(all(not(test), feature = "clippy"), warn(result_unwrap_used))]
 #![cfg_attr(feature = "clippy", warn(unseparated_literal_suffix))]
 #![cfg_attr(feature = "clippy", warn(wrong_pub_self_convention))]
+pub mod beerxml_conv;
 pub mod bryggio;

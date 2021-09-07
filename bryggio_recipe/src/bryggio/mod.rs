@@ -1,4 +1,4 @@
-mod process;
+pub(crate) mod process;
 pub mod recipe;
 // mod state_machine;
 pub use recipe::Recipe;

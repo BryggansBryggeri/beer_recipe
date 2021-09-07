@@ -85,6 +85,7 @@ impl<'de> Deserialize<'de> for Type {
 // TODO: This can be done with serde macro?
 mod ibu_method {
     use super::*;
+    use brew_calculator::ibu::Tinseth;
     use serde::{Deserialize, Deserializer};
     pub(super) fn deserialize<'de, D>(deserializer: D) -> Result<Option<ibu::Method>, D::Error>
     where
@@ -92,7 +93,7 @@ mod ibu_method {
     {
         let s = String::deserialize(deserializer)?;
         match s.as_str() {
-            "Tinseth" => Ok(Some(ibu::Method::Tinseth)),
+            "Tinseth" => Ok(Some(ibu::Method::Tinseth(Tinseth {}))),
             "Rager" => Ok(Some(ibu::Method::Rager)),
             "Garetz" => Ok(Some(ibu::Method::Garetz)),
             _ => Err(serde::de::Error::unknown_variant(&s, &["Unknown type"])),

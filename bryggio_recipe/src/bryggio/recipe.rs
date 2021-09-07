@@ -1,122 +1,79 @@
-use crate::bryggio;
-use crate::bryggio::process;
-use beerxml;
+use thiserror::Error;
+
+use crate::bryggio::{process, Equipment, Fermentable, Hop, Misc, Style, Type, Water, Yeast};
 use brew_calculator::units::*;
-use brew_calculator::{ibu, utils};
-use serde;
+use brew_calculator::{ibu, ibu::IbuCalc, utils};
 use serde::Deserialize;
-use std::convert::From;
 
 #[derive(Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "UPPERCASE")]
-pub struct Recipe {
+pub struct Recipe<Src: RecipeSrc> {
     pub name: String,
     #[serde(rename = "TYPE")]
-    type_: bryggio::Type,
-    style: bryggio::Style,
-    brewer: String,
-    asst_brewer: Option<String>,
-    equipment: Option<bryggio::Equipment>,
+    pub(crate) type_: Type,
+    pub(crate) style: Style,
+    pub(crate) brewer: String,
+    pub(crate) asst_brewer: Option<String>,
+    pub(crate) equipment: Option<Equipment>,
     pub batch_size: Liters,
-    pre_boil_gravity: Option<SpecificGravity>,
-    og: Option<SpecificGravity>,
-    fg: Option<SpecificGravity>,
+    pub(crate) pre_boil_gravity: Option<SpecificGravity>,
+    pub(crate) og: Option<SpecificGravity>,
+    pub(crate) fg: Option<SpecificGravity>,
     /// Not used for `Type::Extract`
-    efficiency: f32,
-    hops: Vec<bryggio::Hop>,
-    fermentables: Vec<bryggio::Fermentable>,
-    yeasts: Vec<bryggio::Yeast>,
-    waters: Vec<bryggio::Water>,
-    miscs: Vec<bryggio::Misc>,
-    mash: process::Mash,
-    boil: process::Boil,
-    fermentation: process::Fermentation,
-    carbonation: process::Carbonation,
-    notes: Option<String>,
-    taste_notes: Option<String>,
-    taste_rating: Option<f32>,
+    pub(crate) efficiency: f32,
+    pub(crate) hops: Vec<Hop>,
+    pub(crate) fermentables: Vec<Fermentable>,
+    pub(crate) yeasts: Vec<Yeast>,
+    pub(crate) waters: Vec<Water>,
+    pub(crate) miscs: Vec<Misc>,
+    pub(crate) mash: process::Mash,
+    pub(crate) boil: process::Boil,
+    pub(crate) fermentation: process::Fermentation,
+    pub(crate) carbonation: process::Carbonation,
+    pub(crate) notes: Option<String>,
+    pub(crate) taste_notes: Option<String>,
+    pub(crate) taste_rating: Option<f32>,
     pub(crate) date: Option<String>,
-    ibu_method: Option<ibu::Method>,
+    pub(crate) ibu_method: ibu::Method,
+    pub(crate) recipe_src: Src,
 }
 
-impl From<beerxml::Recipe> for Recipe {
-    fn from(beerxml_recipe: beerxml::Recipe) -> Self {
-        Recipe {
-            name: beerxml_recipe.name,
-            type_: beerxml_recipe.type_,
-            style: beerxml_recipe.style,
-            brewer: beerxml_recipe.brewer,
-            asst_brewer: beerxml_recipe.asst_brewer,
-            equipment: beerxml_recipe.equipment,
-            batch_size: beerxml_recipe.batch_size,
-            // Both gravity measures should be inferred
-            // from grain bill, efficiency et al.
-            pre_boil_gravity: None,
-            og: beerxml_recipe.og,
-            fg: beerxml_recipe.fg,
-            efficiency: beerxml_recipe.efficiency,
-            hops: beerxml_recipe.hops.hop,
-            fermentables: beerxml_recipe.fermentables.fermentable,
-            miscs: beerxml_recipe.miscs.misc,
-            yeasts: beerxml_recipe.yeasts.yeast,
-            waters: beerxml_recipe.waters.water,
-            mash: process::Mash {},
-            boil: process::Boil::from_beerxml_recipe(
-                beerxml_recipe.boil_size,
-                beerxml_recipe.boil_time,
-            ),
-            fermentation: process::Fermentation {},
-            carbonation: process::Carbonation {},
-            notes: beerxml_recipe.notes,
-            taste_notes: beerxml_recipe.taste_notes,
-            taste_rating: beerxml_recipe.og,
-            date: beerxml_recipe.date,
-            ibu_method: beerxml_recipe.ibu_method,
-        }
-    }
-}
-
-impl Recipe {
-    pub fn hops(&self) -> std::slice::Iter<bryggio::Hop> {
+impl<Src: RecipeSrc> Recipe<Src> {
+    pub fn hops(&self) -> std::slice::Iter<Hop> {
         self.hops.iter()
     }
 
-    pub fn fermentables(&self) -> std::slice::Iter<bryggio::Fermentable> {
+    pub fn fermentables(&self) -> std::slice::Iter<Fermentable> {
         self.fermentables.iter()
     }
 
-    pub fn yeasts(&self) -> std::slice::Iter<bryggio::Yeast> {
+    pub fn yeasts(&self) -> std::slice::Iter<Yeast> {
         self.yeasts.iter()
     }
 
-    pub fn waters(&self) -> std::slice::Iter<bryggio::Water> {
+    pub fn waters(&self) -> std::slice::Iter<Water> {
         self.waters.iter()
     }
 
-    pub fn miscs(&self) -> std::slice::Iter<bryggio::Misc> {
+    pub fn miscs(&self) -> std::slice::Iter<Misc> {
         self.miscs.iter()
     }
 
     /// Total IBU for recipe
     ///
     /// Calculates and sums the individual IBU contributions for all bittering hops.
-    pub fn ibu(&self) -> Result<Ibu, RecipeError> {
-        let ibu_method = self
-            .ibu_method
-            .ok_or(RecipeError::IbuCalcWithoutIbuMethod)?;
-        Ok(self
-            .hops()
+    pub fn ibu(&self) -> Ibu {
+        self.hops()
             .filter(|hop| hop.bittering())
             .fold(0.0, |acc, hop| {
-                acc + ibu::ibu(
-                    ibu_method,
+                acc + self.ibu_method.ibu(
                     hop.amount,
                     hop.alpha,
                     self.average_boil_volume(hop.time),
                     hop.time,
                     self.average_specific_gravity(hop.time),
                 )
-            }))
+            })
     }
 
     /// Average boil volume
@@ -174,7 +131,8 @@ impl Recipe {
     }
 }
 
-use thiserror::Error;
+pub trait RecipeSrc {}
+
 #[derive(Copy, Clone, Debug, Error)]
 pub enum RecipeError {
     #[error("Tried calculating IBU with IBU method 'None'")]

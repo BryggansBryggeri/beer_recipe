@@ -1,3 +1,4 @@
+use beer_recipe::beerxml_conv::BeerXmlSrc;
 use beer_recipe::bryggio;
 use std::f32;
 use std::fs;
@@ -20,7 +21,7 @@ fn main() {
     println!("\n\nLargest single hop amount found: {}kg/l", &max_hop);
 }
 
-fn max_hop_amount_in_recipe(recipe: &bryggio::Recipe) -> f32 {
+fn max_hop_amount_in_recipe(recipe: &bryggio::Recipe<BeerXmlSrc>) -> f32 {
     let hops = recipe.hops();
     hops.filter(|hop| hop.use_ != beerxml::hop::Use::DryHop)
         .map(|hop| {

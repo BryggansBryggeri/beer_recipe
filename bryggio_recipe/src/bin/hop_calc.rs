@@ -1,4 +1,4 @@
-use beer_recipe::bryggio;
+use beer_recipe::bryggio::Recipe;
 use std::fs;
 use std::io::prelude::*;
 use std::path;
@@ -8,11 +8,11 @@ fn main() {
     let recipe = read_file_to_string(recipe_file).unwrap();
 
     let recipe = serde_xml_rs::from_str::<beerxml::Recipe>(&recipe).unwrap();
-    let recipe: bryggio::Recipe = recipe.into();
+    let recipe = Recipe::from(recipe);
     println!(
         "Total IBU for '{}': {}",
         recipe_file.file_stem().unwrap().to_str().unwrap(),
-        recipe.ibu().unwrap()
+        recipe.ibu()
     );
 }
 
