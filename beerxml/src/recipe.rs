@@ -7,7 +7,7 @@ use crate::style::Style;
 use crate::utils;
 use crate::water::Waters;
 use crate::yeast::Yeasts;
-use brew_calculator::units::*;
+use brew_calculator::{ibu, units::*};
 use serde::{Deserialize, Deserializer};
 
 #[derive(Deserialize, Debug, PartialEq)]
@@ -56,7 +56,7 @@ pub struct Recipe {
     pub priming_sugar_equiv: Option<f32>,
     pub keg_priming_factor: Option<f32>,
     #[serde(default, with = "ibu_method")]
-    pub ibu_method: Option<IbuMethod>,
+    pub ibu_method: Option<ibu::Method>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -82,37 +82,19 @@ impl<'de> Deserialize<'de> for Type {
     }
 }
 
-/// IBU methods
-#[derive(Debug, PartialEq)]
-pub enum IbuMethod {
-    Tinseth,
-    Rager,
-    Garetz,
-}
-
-use brew_calculator::ibu;
-impl From<IbuMethod> for ibu::Method {
-    fn from(method: IbuMethod) -> ibu::Method {
-        match method {
-            IbuMethod::Tinseth => ibu::Method::Tinseth,
-            _ => todo!(),
-        }
-    }
-}
-
 // TODO: This can be done with serde macro?
 mod ibu_method {
-    use super::IbuMethod;
+    use super::*;
     use serde::{Deserialize, Deserializer};
-    pub(super) fn deserialize<'de, D>(deserializer: D) -> Result<Option<IbuMethod>, D::Error>
+    pub(super) fn deserialize<'de, D>(deserializer: D) -> Result<Option<ibu::Method>, D::Error>
     where
         D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
         match s.as_str() {
-            "Tinseth" => Ok(Some(IbuMethod::Tinseth)),
-            "Rager" => Ok(Some(IbuMethod::Rager)),
-            "Garetz" => Ok(Some(IbuMethod::Garetz)),
+            "Tinseth" => Ok(Some(ibu::Method::Tinseth)),
+            "Rager" => Ok(Some(ibu::Method::Rager)),
+            "Garetz" => Ok(Some(ibu::Method::Garetz)),
             _ => Err(serde::de::Error::unknown_variant(&s, &["Unknown type"])),
         }
     }

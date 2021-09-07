@@ -13,7 +13,6 @@ pub use equipment::Equipment;
 pub use fermentable::Fermentable;
 pub use hop::Hop;
 pub use misc::Misc;
-pub use recipe::IbuMethod;
 pub use recipe::Recipe;
 pub use recipe::Type;
 pub use style::Style;
