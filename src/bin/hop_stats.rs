@@ -17,7 +17,7 @@ fn main() {
             println!("\nRecipe: {}\n---------------", &recipe.name);
             max_hop_amount_in_recipe(&recipe.into())
         })
-        .fold(0. / 0., f32::max);
+        .fold(f32::NEG_INFINITY, f32::max);
     println!("\n\nLargest single hop amount found: {}kg/l", &max_hop);
 }
 
@@ -32,7 +32,7 @@ fn max_hop_amount_in_recipe(recipe: &bryggio::Recipe) -> f32 {
             );
             hop.amount / recipe.batch_size
         })
-        .fold(0. / 0., f32::max)
+        .fold(f32::NEG_INFINITY, f32::max)
 }
 
 fn read_file_to_string<P: AsRef<path::Path>>(file_name: P) -> std::io::Result<String> {

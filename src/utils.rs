@@ -1,5 +1,3 @@
-use serde;
-
 use serde::{de, Deserialize, Deserializer};
 use std::str::FromStr;
 
